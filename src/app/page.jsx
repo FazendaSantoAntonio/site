@@ -1,3 +1,4 @@
+"use client";
 import Image from "next/image";
 import queijobg from "../../public/queijobg.jpg"
 import Destaques from "./components/Destaques";
