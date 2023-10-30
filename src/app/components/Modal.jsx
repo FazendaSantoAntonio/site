@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 
 function Modal() {
   const [isOpen, setIsOpen] = useState(true);
