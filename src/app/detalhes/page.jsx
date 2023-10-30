@@ -17,7 +17,7 @@ export default function Detalhes() {
           {/* <CarrosselDetalhes primeira={image} segunda={image} terceira={image} title="foto de um foguete" /> */}
         </div>
         <div className=" w-[40%] text-primary">
-          <h2 className="text-5xl pb-2 border-b-2 border-primary font-bold">Foguete</h2>
+          <h2 className="text-5xl pb-2 border-b-2 border-primary font-bold">Queijo</h2>
           <div className="flex gap-2">
             <FontAwesomeIcon icon={faStar} className="w-4 text-yellow-500 py-5" />
             <FontAwesomeIcon icon={faStar} className="w-4 text-yellow-500 py-5" />

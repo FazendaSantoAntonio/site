@@ -29,8 +29,8 @@ export default function Home() {
           <Image src={queijobg} alt="queijo" className="object-cover left-0 top-0 absolute -z-10 opacity-90 h-full" />
         </div>
       </div>
-      <Destaques />
-      <Promocao />
+      {/* <Destaques />
+      <Promocao /> */}
       <Produtos />
       <Blog />
     </div >
