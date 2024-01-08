@@ -34,7 +34,7 @@ export default function Home() {
       <Promocao /> */}
       <Produtos />
       <Blog />
-      <Modal />
+      {/* <Modal /> */}
     </div >
   )
 }
