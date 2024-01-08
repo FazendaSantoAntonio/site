@@ -5,7 +5,7 @@ import Destaques from "./components/Destaques";
 import Promocao from "./components/Promocao";
 import Produtos from "./components/Produtos";
 import Blog from "./components/Blog";
-import Modal from "./components/Modal";
+// import Modal from "./components/Modal";
 
 export default function Home() {
   return (
