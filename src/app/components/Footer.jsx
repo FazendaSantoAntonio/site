@@ -18,9 +18,6 @@ export default function Footer() {
             <div className="bg-primary p-16 md:p-2 md:py-5 flex flex-col md:flex-row justify-center gap-16 w-screen text-secondary md:space-y-5">
                 <div className="flex flex-col  mb-10 md:mb-0 ">
                     <Image src={logo} className="w-48" />
-                    <p className="w-64 text-justify text-sm mt-5 text-light ">
-                        Lorem ipsum dolor sit amet consectetur adipisicing elit. Reiciendis exercitationem, nobis labore architecto nisi tempore ex qui quia vitae molestias autem, assumenda ratione in ullam eos, consequatur expedita et vel!
-                    </p>
                     <div className="flex gap-5 mt-5">
                         <Link href="https://www.instagram.com/queijofazendasantoantonio/" target="_blank" className="text-secondary text-2xl hover:text-light transition-all duration-300 w-5"><FontAwesomeIcon icon={faInstagram} />
                         </Link>
