@@ -44,14 +44,14 @@ const Card = ({ foto, titulo, preco, precoav, ratings, }) => {
         <div className="text-primary flex flex-col justify-center items-center w-72 bg-primary/20  shadow-md shadow-black/30">
             <Image src={foto} alt={titulo} height={300} width={300} className="rounded" />
             <div className="mt-5 flex flex-col justify-center items-center">
-                <span className="font-bold text-xl text-center">{titulo}</span>
-                <StarRating rating={averageRating} />
-                <span className="font-bold text-xl text-orange-500">R${preco}</span>
-                <span>à vista R$ <span className="text-orange-500 font-bold">{precoav}</span></span>
+                <span className="font-bold text-xl text-center mb-9">{titulo}</span>
+                <StarRating rating={averageRating} className="mb-9" />
+                <span className="font-bold text-xl text-orange-500 mb-9">R${preco}</span>
+                {/* <span>à vista R$ <span className="text-orange-500 font-bold">{precoav}</span></span> */}
             </div>
             <div className="flex gap-5 my-5">
                 <button className="flex justify-center items-center bg-primary text-secondary font-bold px-5 py-2 rounded border-2 border-secondary hover:text-primary hover:bg-secondary transition-all duration-300">Compre</button>
-                <Link href="/detalhes" className="flex justify-center items-center bg-secondary text-primary font-bold px-5 py-2 rounded border-2 border-secondary hover:text-secondary hover:bg-primary transition-all duration-300">Detalhes</Link>
+                <Link href="/" className="flex justify-center items-center bg-secondary text-primary font-bold px-5 py-2 rounded border-2 border-secondary hover:text-secondary hover:bg-primary transition-all duration-300">Detalhes</Link>
             </div>
         </div>
     )
