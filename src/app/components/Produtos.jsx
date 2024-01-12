@@ -38,15 +38,18 @@ function StarRating({ rating }) {
     return <div className="flex">{starIcons}</div>;
 }
 
-const Card = ({ foto, titulo, preco, precoav, ratings, }) => {
+const Card = ({ foto, titulo, shortdescription, preco, precoav, ratings, }) => {
     const averageRating = calculateAverageRating(ratings);
+    const precoAtual = preco;
+    const numberFormatted = precoAtual.toLocaleString('pt-BR', { maximumFractionDigits: 2 });
     return (
         <div className="text-primary flex flex-col justify-center items-center w-72 bg-primary/20  shadow-md shadow-black/30">
             <Image src={foto} alt={titulo} height={300} width={300} className="rounded" />
             <div className="mt-5 flex flex-col justify-center items-center">
-                <span className="font-bold text-xl text-center mb-9">{titulo}</span>
-                <StarRating rating={averageRating} className="mb-9" />
-                <span className="font-bold text-xl text-orange-500 mb-9">R${preco}</span>
+                <span className="font-bold text-xl text-center mb-2">{titulo}</span>
+                <span className="text-center mb-2">{shortdescription}</span>
+                <StarRating rating={averageRating} />
+                <span className="font-bold text-xl text-orange-500 mt-4 mb-2">R$ {numberFormatted}</span>
                 {/* <span>à vista R$ <span className="text-orange-500 font-bold">{precoav}</span></span> */}
             </div>
             <div className="flex gap-5 my-5">
@@ -90,10 +93,11 @@ function DatabaseRead({ currentPage, itemsPerPage }) {
                         <Card
                             key={item.id}
                             titulo={item.produto}
+                            shortdescription={item.shortdescription}
                             preco={item.valor}
                             foto={primeiroLink}
                             ratings={item.avaliacao}
-                            href="/compra"
+                            href="/"
                         />
                     );
                 }
