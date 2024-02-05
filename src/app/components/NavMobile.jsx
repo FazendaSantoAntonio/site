@@ -76,14 +76,14 @@ export default function NavMobile() {
           <FontAwesomeIcon icon={faComments} className="h-5 text-vermelho w-10" />
           <p className="pl-3">Atendimento</p>
         </Link>
-        <Link
+        {/* <Link
           href="quem-somos"
           className=" text-yellow1 flex cursor-pointer p-2 pl-5 text-sm font-semibold text-vermelho shadow-lg duration-300 ease-in-out hover:text-light"
           onClick={() => setShowSidebar(!showSidebar)}
         >
           <FontAwesomeIcon icon={faCheese} className="h-5 text-vermelho w-10" />
           <p className="pl-3">Produtos</p>
-        </Link>
+        </Link> */}
         <Link
           href="/"
           className=" text-yellow1 flex cursor-pointer p-2 pl-5 text-sm font-semibold text-vermelho shadow-lg duration-300 ease-in-out hover:text-light"
