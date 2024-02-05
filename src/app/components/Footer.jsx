@@ -1,8 +1,5 @@
 import Image from "next/image";
 import logo from "../../../public/logo.png";
-import visa from "../../../public/visa.png";
-import master from "../../../public/master.png";
-import american from "../../../public/american.png";
 import rixxer from "../../../public/rixxer.png";
 import Link from "next/link";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -19,7 +16,7 @@ export default function Footer() {
   return (
     <div className="flex flex-col justify-center items-center w-screen">
       <div className="bg-primary p-16 md:p-2 md:py-5 flex flex-col md:flex-row justify-center gap-16 w-screen text-secondary md:space-y-5">
-        <div className="flex flex-col  mb-10 md:mb-0 ">
+        <div className="flex flex-col justify-center align-center items-center">
           <Image
             src={logo}
             alt="Queijo Fazenda Santo Antônio"
@@ -27,7 +24,7 @@ export default function Footer() {
           />
         
         </div>
-        <div className="flex flex-col">
+        <div className="flex flex-col text-center align-center">
           <h2 className="uppercase font-bold">Institucional</h2>
           <Link
             href="fale-conosco"
@@ -55,14 +52,14 @@ export default function Footer() {
           </Link>
         </div>
 
-        <div className="flex flex-col md:items-center">
+        <div className="flex flex-col text-center align-center">
           <h2 className="w-72 text-center mb-5">
           Praca Manoel Mendes Carvalho, 114, Alagoa - MG, 37458-000, Brasil
           </h2>
           <Link
               href="https://www.instagram.com/queijofazendasantoantonio/"
               target="_blank"
-              className="flex items-center hover:text-light transition-all duration-300"
+              className="flex justify-center align-center items-center hover:text-light transition-all duration-300"
             >
               <FontAwesomeIcon icon={faInstagram} />&nbsp;
               Siga-nos no Instagram
@@ -70,7 +67,7 @@ export default function Footer() {
             <Link
               href="https://www.facebook.com/queijofazendasantoantonio"
               target="_blank"
-              className="flex items-center hover:text-light transition-all duration-300"
+              className="flex justify-center align-center items-center hover:text-light transition-all duration-300"
             >
               <FontAwesomeIcon icon={faFacebook} />&nbsp;
               Curta nossa página no Facebook
@@ -78,7 +75,7 @@ export default function Footer() {
           <Link
             href="https://wa.me/+553598647172"
             target="_blank"
-            className="flex items-center hover:text-light transition-all duration-300"
+            className="flex justify-center align-center items-center hover:text-light transition-all duration-300"
           >
             <FontAwesomeIcon icon={faWhatsapp} className="text-2xl h-4 mr-2 " />
             +55 (35) 99864-7172

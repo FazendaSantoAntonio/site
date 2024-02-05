@@ -79,7 +79,7 @@ export default function NavBar() {
           />
         </Link>
 
-        <CustonLink link="/carrinho" title="Carrinho" icon={faShoppingCart} />
+        <CustonLink link="/" title="Carrinho" icon={faShoppingCart} />
 
         <CustonLink
           link="/fale-conosco"

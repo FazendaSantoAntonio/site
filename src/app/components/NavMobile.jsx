@@ -85,7 +85,7 @@ export default function NavMobile() {
           <p className="pl-3">Produtos</p>
         </Link>
         <Link
-          href="/carrinho"
+          href="/"
           className=" text-yellow1 flex cursor-pointer p-2 pl-5 text-sm font-semibold text-vermelho shadow-lg duration-300 ease-in-out hover:text-light"
           onClick={() => setShowSidebar(!showSidebar)}
         >
@@ -112,7 +112,7 @@ export default function NavMobile() {
           <p className="pl-3">Política de privacidade</p>
         </Link>
         <Link
-          href="politica-de-troca-devolucao"
+          href="politica-de-troca-e-devolucao"
           className=" text-yellow1  flex cursor-pointer p-2 pl-5 text-sm font-semibold text-vermelho shadow-lg duration-300 ease-in-out hover:text-light"
           onClick={() => setShowSidebar(!showSidebar)}
         >
