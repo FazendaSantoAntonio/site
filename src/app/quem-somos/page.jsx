@@ -76,7 +76,7 @@ export default function QuemSomos() {
         cidade que tinham Medalha de Ouro na França. O Osvaldinho `Queijo
         Alagoa` e o Renato `Bela Vista`. Pensei comigo, se eu ganhasse seria
         muito legal também, um premio internacional. Virei associado da
-        `Sertobras` e a Débora, que é Presidente e mora na França me auxiliou na
+        `Sertãobras` e a Débora, que é Presidente e mora na França me auxiliou na
         inscrição do concurso. Inscrevi o meu queijo e mandei o para França.
         Pensei: `ahh, muito difícil, um dos maiores concursos do mundo`. De
         repente, recebi a notícia que ganhei uma medalha de bronze na França,
