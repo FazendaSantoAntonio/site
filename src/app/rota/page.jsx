@@ -19,7 +19,7 @@ export default function Rota() {
           - Visita à Cachoeira do Facão, para fazer fotos espetaculares; <br />
           - Visita à Queijo Fazenda Santo Antônio, para conhecer nossa produção de queijos. <br /><br />
           Para reservar sua vaga, ou obter mais informações: <br />
-          <Link href="https://wa.me/5535999999999" className="font-bold text-xl">Clique aqui e fale conosco pelo WhatsApp</Link>
+          <Link href="https://wa.me/5535998647172" className="font-bold text-xl">Clique aqui e fale conosco pelo WhatsApp</Link>
           <br /><br />
         </div>
         <div className="flex-wrap p-8">
