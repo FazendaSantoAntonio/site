@@ -14,8 +14,8 @@ export default function Rota() {
           Em nossa Rota, você vai ter a oportunidade de respirar um bom ar puro da montanha, conhecer a paz e tranquilidade de Alagoa, visitar uma cachoeira, enfim, ter um dia espetacular conosco! <br /><br />
           Garantimos uma experiência inesquecível! <br /><br />
           Nesse passeio, você vai conhecer: <br />
-          - Visita à Fazenda X, para conhecer o plantio das oliveiras; <br />
-          - Almoço no Restaurante x, para apreciar a comida Mineira; <br />
+          - Visita à Fazenda Cauré, para conhecer o plantio das oliveiras; <br />
+          - Almoço em Restaurante local, para apreciar a comida Mineira; <br />
           - Visita à Cachoeira do Facão, para fazer fotos espetaculares; <br />
           - Visita à Queijo Fazenda Santo Antônio, para conhecer nossa produção de queijos. <br /><br />
           Para reservar sua vaga, ou obter mais informações: <br />
@@ -42,10 +42,53 @@ export default function Rota() {
           <div className="flex-wrap p-8">
             <Image src="/rota5.jpg" width="948" height="711" alt="Conheça Alagoa" className="rounded-3xl" />
           </div>
+        </div>
+
+        <div className="flex flex-col md:flex-row">
           <div className="flex-wrap p-8">
             <Image src="/rota6.jpg" width="948" height="711" alt="Conheça Alagoa" className="rounded-3xl" />
           </div>
+          <div className="flex-wrap p-8">
+            <Image src="/rota10.jpg" width="948" height="711" alt="Conheça Alagoa" className="rounded-3xl" />
+          </div>
+          <div className="flex-wrap p-8">
+            <Image src="/rota8.jpg" width="948" height="711" alt="Conheça Alagoa" className="rounded-3xl" />
+          </div>
+          <div className="flex-wrap p-8">
+            <Image src="/rota13.jpg" width="948" height="711" alt="Conheça Alagoa" className="rounded-3xl" />
+          </div>
         </div>
+
+        <div className="flex flex-col md:flex-row">
+          <div className="flex-wrap p-8">
+            <Image src="/rota7.jpg" width="948" height="711" alt="Conheça Alagoa" className="rounded-3xl" />
+          </div>
+          <div className="flex-wrap p-8">
+            <Image src="/rota11.jpg" width="948" height="711" alt="Conheça Alagoa" className="rounded-3xl" />
+          </div>
+          <div className="flex-wrap p-8">
+            <Image src="/rota12.jpg" width="948" height="711" alt="Conheça Alagoa" className="rounded-3xl" />
+          </div>
+          <div className="flex-wrap p-8">
+            <Image src="/rota9.jpg" width="948" height="711" alt="Conheça Alagoa" className="rounded-3xl" />
+          </div>
+        </div>
+
+        <div className="flex flex-col md:flex-row">
+          <div className="flex-wrap p-8">
+            <Image src="/rota14.jpg" width="948" height="711" alt="Conheça Alagoa" className="rounded-3xl" />
+          </div>
+          <div className="flex-wrap p-8">
+            <Image src="/rota17.jpg" width="948" height="711" alt="Conheça Alagoa" className="rounded-3xl" />
+          </div>
+          <div className="flex-wrap p-8">
+            <Image src="/rota16.jpg" width="948" height="711" alt="Conheça Alagoa" className="rounded-3xl" />
+          </div>
+          <div className="flex-wrap p-8">
+            <Image src="/rota15.jpg" width="948" height="711" alt="Conheça Alagoa" className="rounded-3xl" />
+          </div>
+        </div>
+
       </div>
 
     </main>
