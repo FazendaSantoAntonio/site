@@ -31,7 +31,7 @@ const CustonLink = ({ title, icon, link }) => {
 export default function NavBar() {
   return (
     <div>
-      <div className="fixed flex justify-center md:justify-between items-center px-5 bg-[#FFDE99] w-screen z-10 backdrop-blur-md top-0">
+      <div className="fixed flex justify-center md:justify-between items-center px-5 bg-[#FFDE99] w-screen z-10 backdrop-blur-md top-0 z-20">
         <div className="p-3 flex">
           <p className="justify-center items-center text-sm text-[#4A241D]">
             <FontAwesomeIcon icon={faWarning} className="mr-2" /> Frete grátis
