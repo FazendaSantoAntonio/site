@@ -60,12 +60,12 @@ export default function Rota() {
         </div>
         <div className="flex-wrap md:p-12 bg-white md:w-1/3">
           <p className='text-xl pb-12'>
-            <button className="font-bold text-xl bg-[#592F2F] text-white border px-8 py-4 rounded-full">Pagamento via PIX</button>
+            <Link href="https://payment-link.pagar.me/pl_AaWwRN56yZXKRgBSOU351Y7Jxoe8m0BL" target="_blank" className="font-bold text-xl bg-[#592F2F] text-white border px-8 py-4 rounded-full">Comprar Agora! (1 pessoa)</Link>
           </p>
         </div>
         <div className="flex-wrap md:p-12 bg-white md:w-1/3">
           <p className='text-xl pb-12'>
-            <button className="font-bold text-xl bg-[#592F2F] text-white border px-8 py-4 rounded-full">Pagamento com Cartão</button>
+            <Link href="https://payment-link.pagar.me/pl_7zoMwQmPg2jrZXC2ecBYE86W3bxVX90D" target="_blank" className="font-bold text-xl bg-[#592F2F] text-white border px-8 py-4 rounded-full">Comprar Agora! (2 pessoas)</Link>
           </p>
         </div>
       </div>
