@@ -1,6 +1,7 @@
 "use client";
 import CarrosselDetalhes from "./components/CarrosselDetalhes";
 import Produtos from "./components/Produtos";
+import RotaDoQueijo from "./components/RotadoQueijo";
 import Blog from "./components/Blog";
 
 export default function Home() {
@@ -8,6 +9,7 @@ export default function Home() {
     <div>
       <CarrosselDetalhes />
       <Produtos />
+      {/* <RotaDoQueijo /> */}
       <Blog />
     </div >
   )
