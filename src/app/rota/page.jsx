@@ -1,4 +1,5 @@
 import Image from 'next/image'
+import Link from 'next/link'
 
 export default function Rota() {
   return (
@@ -56,16 +57,16 @@ export default function Rota() {
 
       <div className="flex flex-col md:flex-row md:px-28 text-center">
         <div className="flex-wrap p-12 bg-white md:w-1/2 justify-center">
-          <p className='text-xl md:pb-12'>Aproveite e faça hoje mesmo sua reserva para a <span className="font-bold text-primary">Rota do Queijo e do Azeite!</span> Escolha a forma de pagamento preferida:</p>
+          <p className='text-xl '>Aproveite e faça hoje mesmo sua reserva para a <span className="font-bold text-primary">Rota do Queijo e do Azeite!</span> Escolha a forma de pagamento preferida:</p>
         </div>
-        <div className="flex-wrap md:p-12 bg-white md:w-1/3">
+        <div className="flex-wrap md:pt-24 bg-white md:w-1/2">
           <p className='text-xl pb-12'>
-            <Link href="https://payment-link.pagar.me/pl_AaWwRN56yZXKRgBSOU351Y7Jxoe8m0BL" target="_blank" className="font-bold text-xl bg-[#592F2F] text-white border px-8 py-4 rounded-full">Comprar Agora! (1 pessoa)</Link>
+            <Link href="https://payment-link.pagar.me/pl_AaWwRN56yZXKRgBSOU351Y7Jxoe8m0BL" target="_blank" className="font-bold text-xl bg-[#592F2F] text-white border px-8 py-4 rounded-full">Comprar - Individual</Link>
           </p>
         </div>
-        <div className="flex-wrap md:p-12 bg-white md:w-1/3">
+        <div className="flex-wrap md:pt-24 bg-white md:w-1/2">
           <p className='text-xl pb-12'>
-            <Link href="https://payment-link.pagar.me/pl_7zoMwQmPg2jrZXC2ecBYE86W3bxVX90D" target="_blank" className="font-bold text-xl bg-[#592F2F] text-white border px-8 py-4 rounded-full">Comprar Agora! (2 pessoas)</Link>
+            <Link href="https://payment-link.pagar.me/pl_7zoMwQmPg2jrZXC2ecBYE86W3bxVX90D" target="_blank" className="font-bold text-xl bg-[#592F2F] text-white border px-8 py-4 rounded-full">Comprar - 2 pessoas</Link>
           </p>
         </div>
       </div>
