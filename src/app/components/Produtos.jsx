@@ -4,42 +4,8 @@ import Link from "next/link"
 import React, { useEffect, useState } from "react"
 import { db } from "../../../config/firebase"
 import { collection, getDocs } from 'firebase/firestore';
-import { faStar } from "@fortawesome/free-solid-svg-icons"
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 
-
-function calculateAverageRating(ratings) {
-    if (!ratings || ratings.length === 0) {
-        return 0; // Se não houver avaliações ou se ratings for undefined, a média é 0.
-    }
-
-    // const totalRating = ratings.reduce((acc, rating) => acc + rating, 0);
-    const averageRating = ratings.length;
-    return averageRating;
-}
-
-function StarRating({ rating }) {
-    const numStars = 5;
-    const filledStars = Math.floor(rating);
-
-    const starIcons = [];
-    for (let i = 0; i < numStars; i++) {
-        if (i < filledStars) {
-            starIcons.push(
-                <FontAwesomeIcon key={i} icon={faStar} className="text-yellow-500" />
-            );
-        } else {
-            starIcons.push(
-                <FontAwesomeIcon key={i} icon={faStar} className="text-zinc-300" />
-            );
-        }
-    }
-
-    return <div className="flex">{starIcons}</div>;
-}
-
-const Card = ({ foto, titulo, shortdescription, preco, precoav, ratings, }) => {
-    const averageRating = calculateAverageRating(ratings);
+const Card = ({ foto, titulo, shortdescription, preco, linkpagamento }) => {
     const precoAtual = preco;
     const numberFormatted = precoAtual.toLocaleString('pt-BR', { maximumFractionDigits: 2 });
     return (
@@ -48,13 +14,15 @@ const Card = ({ foto, titulo, shortdescription, preco, precoav, ratings, }) => {
             <div className="mt-5 flex flex-col justify-center items-center">
                 <span className="font-bold text-xl text-center mb-2">{titulo}</span>
                 <span className="text-center mb-2">{shortdescription}</span>
-                <StarRating rating={averageRating} />
                 <span className="font-bold text-xl text-orange-500 mt-4 mb-2">R$ {numberFormatted}</span>
-                {/* <span>à vista R$ <span className="text-orange-500 font-bold">{precoav}</span></span> */}
             </div>
             <div className="flex gap-5 my-5">
-                <button className="flex justify-center items-center bg-primary text-secondary font-bold px-5 py-2 rounded border-2 border-secondary hover:text-primary hover:bg-secondary transition-all duration-300">Compre</button>
-                <Link href="/" className="flex justify-center items-center bg-secondary text-primary font-bold px-5 py-2 rounded border-2 border-secondary hover:text-secondary hover:bg-primary transition-all duration-300">Detalhes</Link>
+                <Link
+                    href={linkpagamento}
+                    className="flex justify-center items-center bg-primary text-secondary font-bold px-5 py-2 rounded border-2 border-secondary hover:text-primary hover:bg-secondary transition-all duration-300">
+                    Comprar
+                </Link>
+                {/* <Link href="/" className="flex justify-center items-center bg-secondary text-primary font-bold px-5 py-2 rounded border-2 border-secondary hover:text-secondary hover:bg-primary transition-all duration-300">Detalhes</Link> */}
             </div>
         </div>
     )
@@ -72,7 +40,7 @@ function DatabaseRead({ currentPage, itemsPerPage }) {
                     const dataCollection = collection(db, "produtos");
                     const dataSnapshot = await getDocs(dataCollection);
                     const dataList = dataSnapshot.docs.map((doc) => doc.data());
-                    setProduto(dataList.slice(startIndex, endIndex)); // Filtra os itens da página atual
+                    setProduto(dataList.slice(startIndex, endIndex));
                 }
                 getProduto();
             } catch (error) {
@@ -82,7 +50,6 @@ function DatabaseRead({ currentPage, itemsPerPage }) {
 
         fetchData();
     }, [currentPage]);
-
 
     return (
         <div className='grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 items-center justify-center gap-5 pb-10'>
@@ -97,7 +64,7 @@ function DatabaseRead({ currentPage, itemsPerPage }) {
                             preco={item.valor}
                             foto={primeiroLink}
                             ratings={item.avaliacao}
-                            href="/"
+                            linkpagamento={item.linkpagamento}
                         />
                     );
                 }
@@ -109,7 +76,7 @@ const Pagination = ({ currentPage, totalPages, setCurrentPage }) => {
     const pages = [...Array(totalPages).keys()].map((page) => page + 1);
 
     return (
-        <div className="pagination space-x-5 ">
+        <div className="pagination space-x-5">
             {pages.map((page) => (
                 <button
                     key={page}
@@ -142,12 +109,10 @@ export default function Produtos() {
                 console.error("Erro ao obter total de itens:", error);
             }
         }
-
         fetchTotalItems();
     }, []);
     return (
         <div className="flex flex-col justify-center items-center py-16 md:p-16">
-
             <h2 className="text-primary font-bold text-4xl">Produtos</h2>
             <div className="mt-10 flex flex-wrap justify-center items-center">
                 <DatabaseRead currentPage={currentPage} itemsPerPage={itemsPerPage} />
