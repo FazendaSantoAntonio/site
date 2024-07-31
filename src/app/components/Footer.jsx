@@ -22,7 +22,6 @@ export default function Footer() {
             alt="Queijo Fazenda Santo Antônio"
             className="w-48"
           />
-        
         </div>
         <div className="flex flex-col text-center align-center">
           <h2 className="uppercase font-bold">Institucional</h2>
@@ -54,24 +53,24 @@ export default function Footer() {
 
         <div className="flex flex-col text-center align-center">
           <h2 className="w-72 text-center mb-5">
-          Praca Manoel Mendes Carvalho, 114, Alagoa - MG, 37458-000, Brasil
+            Estrada Alagoa-Itamonte, KM 2, Bairro Prateado
           </h2>
           <Link
-              href="https://www.instagram.com/queijofazendasantoantonio/"
-              target="_blank"
-              className="flex justify-center align-center items-center hover:text-light transition-all duration-300"
-            >
-              <FontAwesomeIcon icon={faInstagram} />&nbsp;
-              Siga-nos no Instagram
-            </Link>
-            <Link
-              href="https://www.facebook.com/queijofazendasantoantonio"
-              target="_blank"
-              className="flex justify-center align-center items-center hover:text-light transition-all duration-300"
-            >
-              <FontAwesomeIcon icon={faFacebook} />&nbsp;
-              Curta nossa página no Facebook
-            </Link>
+            href="https://www.instagram.com/queijofazendasantoantonio/"
+            target="_blank"
+            className="flex justify-center align-center items-center hover:text-light transition-all duration-300"
+          >
+            <FontAwesomeIcon icon={faInstagram} />
+            &nbsp; Siga-nos no Instagram
+          </Link>
+          <Link
+            href="https://www.facebook.com/queijofazendasantoantonio"
+            target="_blank"
+            className="flex justify-center align-center items-center hover:text-light transition-all duration-300"
+          >
+            <FontAwesomeIcon icon={faFacebook} />
+            &nbsp; Curta nossa página no Facebook
+          </Link>
           <Link
             href="https://wa.me/+553598647172"
             target="_blank"
@@ -84,8 +83,7 @@ export default function Footer() {
       </div>
       <div className="pt-5 pb-5 text-primary flex flex-col items-center justify-center text-center bg-setext-secondary w-screen">
         <p className="text-xs ">
-          Queijo Fazenda Santo Antônio - Todos os Direitos
-          Reservados, {ano}
+          Queijo Fazenda Santo Antônio - Todos os Direitos Reservados, {ano}
         </p>
         <div className="flex">
           <p className="text-sm">Desenvolvido por</p>{" "}
@@ -94,11 +92,7 @@ export default function Footer() {
             target="_blank"
             className="font-bold text-secondary hover:text-light transition ease-in-out duration-300 flex justify-center items-center"
           >
-            <Image
-              src={rixxer}
-              alt="Rixxer Copr"
-              className="w-12 mx-2"
-            />
+            <Image src={rixxer} alt="Rixxer Copr" className="w-12 mx-2" />
           </a>
         </div>
       </div>
