@@ -31,7 +31,8 @@ const Card = ({ foto, titulo, shortdescription, preco, linkpagamento }) => {
       </div>
       <div className="flex gap-5 my-5">
         <Link
-          href={linkpagamento}
+          // href={linkpagamento}
+          href={"https://wa.me/5535998647172?text=Tenho%20interesse%20em%20comprar%20seus%20produtos"}
           className="flex justify-center items-center bg-primary text-secondary font-bold px-5 py-2 rounded border-2 border-secondary hover:text-primary hover:bg-secondary transition-all duration-300"
         >
           Comprar

@@ -15,7 +15,7 @@ export default function CarrosselDetalhes() {
     <div>
       <Swiper
         autoplay={{
-          delay: 2500,
+          delay: 5000,
           disableOnInteraction: false,
         }}
         style={{
@@ -29,6 +29,14 @@ export default function CarrosselDetalhes() {
         className="mySwiper2 styles.swiper"
       >
         <div className="desktop">
+        <SwiperSlide className="text-center text-xl flex justify-center items-center sm:hidden">
+            <Image
+              src={"/slider4.jpg"}
+              width={1800}
+              height={600}
+              alt={"Promoções"}
+            />
+          </SwiperSlide>
           <SwiperSlide className="text-center text-xl flex justify-center items-center">
             <Link href="/rota">
               <Image
