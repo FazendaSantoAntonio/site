@@ -15,6 +15,7 @@ import {
   faWhatsapp,
 } from "@fortawesome/free-brands-svg-icons";
 import { useAuth } from "../context/AuthContext";
+import { useCart } from "../context/CartContext";
 
 const CustomLink = ({ title, link }) => {
   return (
@@ -29,6 +30,7 @@ const CustomLink = ({ title, link }) => {
 
 export default function NavBar() {
   const { user, profile } = useAuth();
+  const { totalItens } = useCart();
 
   return (
     <div className="sticky top-0 z-30">
@@ -97,10 +99,15 @@ export default function NavBar() {
           </Link>
           <Link
             href="/carrinho"
-            className="flex items-center gap-2 rounded-full border border-gold/50 px-4 py-2 text-sm font-medium text-cream transition-all duration-300 hover:bg-gold hover:text-primary"
+            className="relative flex items-center gap-2 rounded-full border border-gold/50 px-4 py-2 text-sm font-medium text-cream transition-all duration-300 hover:bg-gold hover:text-primary"
           >
             <FontAwesomeIcon icon={faShoppingCart} />
             Carrinho
+            {totalItens > 0 && (
+              <span className="absolute -right-2 -top-2 flex h-5 w-5 items-center justify-center rounded-full bg-terracotta text-xs font-bold text-cream">
+                {totalItens}
+              </span>
+            )}
           </Link>
         </div>
       </nav>

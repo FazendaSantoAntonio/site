@@ -4,22 +4,31 @@ import Link from "next/link";
 import React, { useEffect, useState } from "react";
 import { supabase } from "../../../config/supabase";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faAward } from "@fortawesome/free-solid-svg-icons";
-import { faWhatsapp } from "@fortawesome/free-brands-svg-icons";
+import { faAward, faCartPlus, faCheck } from "@fortawesome/free-solid-svg-icons";
+import { useCart } from "../context/CartContext";
 
 const isPremiado = (text = "") => /pr[eê]mio|premiad/i.test(text);
 
-const Card = ({ id, foto, titulo, shortdescription, preco }) => {
-  const numberFormatted = Number(preco).toLocaleString("pt-BR", {
+const Card = ({ produto }) => {
+  const { addItem } = useCart();
+  const [added, setAdded] = useState(false);
+  const { id, produto: titulo, shortdescription, valor, imagens } = produto;
+  const numberFormatted = Number(valor).toLocaleString("pt-BR", {
     style: "currency",
     currency: "BRL",
   });
+
+  const handleAdd = () => {
+    addItem(produto);
+    setAdded(true);
+    setTimeout(() => setAdded(false), 1500);
+  };
 
   return (
     <div className="card-surface group flex flex-col overflow-hidden transition-all duration-300 hover:-translate-y-1 hover:shadow-card">
       <Link href={`/detalhes?id=${id}`} className="relative block aspect-square overflow-hidden bg-cream">
         <Image
-          src={foto}
+          src={imagens[0]}
           alt={titulo}
           fill
           sizes="(min-width: 768px) 25vw, 50vw"
@@ -45,16 +54,15 @@ const Card = ({ id, foto, titulo, shortdescription, preco }) => {
           <span className="font-display text-xl text-terracotta">
             {numberFormatted}
           </span>
-          <Link
-            href={`https://wa.me/5535998647172?text=${encodeURIComponent(
-              `Olá! Tenho interesse em comprar: ${titulo}`
-            )}`}
-            target="_blank"
-            className="flex items-center gap-2 rounded-full bg-primary px-4 py-2 text-xs font-semibold text-cream transition-all duration-300 hover:bg-terracotta"
+          <button
+            onClick={handleAdd}
+            className={`flex items-center gap-2 rounded-full px-4 py-2 text-xs font-semibold text-cream transition-all duration-300 ${
+              added ? "bg-olive" : "bg-primary hover:bg-terracotta"
+            }`}
           >
-            <FontAwesomeIcon icon={faWhatsapp} />
-            Comprar
-          </Link>
+            <FontAwesomeIcon icon={added ? faCheck : faCartPlus} />
+            {added ? "Adicionado" : "Adicionar"}
+          </button>
         </div>
       </div>
     </div>
@@ -99,16 +107,7 @@ function DatabaseRead({ currentPage, itemsPerPage, produto, loading }) {
     <div className="grid w-full grid-cols-2 gap-5 md:grid-cols-4">
       {pageItems.map((item) => {
         if (Array.isArray(item.imagens) && item.imagens.length > 0) {
-          return (
-            <Card
-              key={item.id}
-              id={item.id}
-              titulo={item.produto}
-              shortdescription={item.shortdescription}
-              preco={item.valor}
-              foto={item.imagens[0]}
-            />
-          );
+          return <Card key={item.id} produto={item} />;
         }
         return null;
       })}

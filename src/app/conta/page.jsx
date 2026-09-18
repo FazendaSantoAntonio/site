@@ -11,6 +11,7 @@ import {
   faLocationDot,
   faBoxOpen,
 } from "@fortawesome/free-solid-svg-icons";
+import AddressForm from "../components/AddressForm";
 
 const statusLabel = {
   pendente: "Pendente",
@@ -20,38 +21,6 @@ const statusLabel = {
   entregue: "Entregue",
   cancelado: "Cancelado",
 };
-
-function AddressForm({ profileId, onSaved }) {
-  const [form, setForm] = useState({
-    cep: "", street: "", number: "", complement: "", neighborhood: "", city: "", state: "",
-  });
-  const [saving, setSaving] = useState(false);
-
-  const handleChange = (e) => setForm({ ...form, [e.target.name]: e.target.value });
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setSaving(true);
-    const { error } = await supabase.from("addresses").insert({ ...form, profile_id: profileId });
-    setSaving(false);
-    if (!error) onSaved();
-  };
-
-  return (
-    <form onSubmit={handleSubmit} className="grid grid-cols-2 gap-3 md:grid-cols-3">
-      <input required name="cep" placeholder="CEP" value={form.cep} onChange={handleChange} className="rounded-lg border border-cardBorder bg-cream px-3 py-2 text-sm outline-none focus:border-gold" />
-      <input required name="street" placeholder="Rua" value={form.street} onChange={handleChange} className="col-span-2 rounded-lg border border-cardBorder bg-cream px-3 py-2 text-sm outline-none focus:border-gold" />
-      <input required name="number" placeholder="Número" value={form.number} onChange={handleChange} className="rounded-lg border border-cardBorder bg-cream px-3 py-2 text-sm outline-none focus:border-gold" />
-      <input name="complement" placeholder="Complemento" value={form.complement} onChange={handleChange} className="rounded-lg border border-cardBorder bg-cream px-3 py-2 text-sm outline-none focus:border-gold" />
-      <input required name="neighborhood" placeholder="Bairro" value={form.neighborhood} onChange={handleChange} className="rounded-lg border border-cardBorder bg-cream px-3 py-2 text-sm outline-none focus:border-gold" />
-      <input required name="city" placeholder="Cidade" value={form.city} onChange={handleChange} className="rounded-lg border border-cardBorder bg-cream px-3 py-2 text-sm outline-none focus:border-gold" />
-      <input required name="state" placeholder="UF" maxLength={2} value={form.state} onChange={handleChange} className="rounded-lg border border-cardBorder bg-cream px-3 py-2 text-sm uppercase outline-none focus:border-gold" />
-      <button type="submit" disabled={saving} className="btn-outline col-span-2 justify-center py-2 text-sm md:col-span-1">
-        {saving ? "Salvando..." : "Salvar endereço"}
-      </button>
-    </form>
-  );
-}
 
 export default function Conta() {
   const router = useRouter();

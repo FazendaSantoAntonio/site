@@ -5,8 +5,8 @@ import { useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { supabase } from "../../../config/supabase";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faAward, faMinus, faPlus } from "@fortawesome/free-solid-svg-icons";
-import { faWhatsapp } from "@fortawesome/free-brands-svg-icons";
+import { faAward, faMinus, faPlus, faCartPlus, faCheck } from "@fortawesome/free-solid-svg-icons";
+import { useCart } from "../context/CartContext";
 
 const isPremiado = (text = "") => /pr[eê]mio|premiad/i.test(text);
 
@@ -14,10 +14,12 @@ export default function Detalhes() {
   const searchParams = useSearchParams();
   const id = searchParams.get("id");
 
+  const { addItem } = useCart();
   const [produto, setProduto] = useState(null);
   const [loading, setLoading] = useState(true);
   const [activeImage, setActiveImage] = useState(0);
   const [count, setCount] = useState(1);
+  const [added, setAdded] = useState(false);
 
   useEffect(() => {
     if (!id) {
@@ -115,16 +117,19 @@ export default function Detalhes() {
               </button>
             </div>
 
-            <Link
-              href={`https://wa.me/5535998647172?text=${encodeURIComponent(
-                `Olá! Tenho interesse em comprar: ${produto.produto} (quantidade: ${count})`
-              )}`}
-              target="_blank"
-              className="btn-primary"
+            <button
+              onClick={() => {
+                addItem(produto, count);
+                setAdded(true);
+                setTimeout(() => setAdded(false), 1500);
+              }}
+              className={`inline-flex items-center justify-center gap-2 rounded-full px-6 py-3 font-sans text-sm font-semibold tracking-wide text-cream transition-all duration-300 ${
+                added ? "bg-olive" : "bg-primary hover:bg-terracotta"
+              }`}
             >
-              <FontAwesomeIcon icon={faWhatsapp} />
-              Comprar
-            </Link>
+              <FontAwesomeIcon icon={added ? faCheck : faCartPlus} />
+              {added ? "Adicionado ao carrinho" : "Adicionar ao carrinho"}
+            </button>
           </div>
 
           <div className="mt-10 border-t border-cardBorder pt-6 text-sm text-primary/60">

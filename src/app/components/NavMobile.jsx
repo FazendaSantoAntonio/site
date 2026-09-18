@@ -22,6 +22,7 @@ import logo from "../../../public/logo.png";
 import { useState } from "react";
 import Image from "next/image";
 import { useAuth } from "../context/AuthContext";
+import { useCart } from "../context/CartContext";
 
 const baseLinks = [
   { href: "/", label: "Início", icon: faHome },
@@ -37,6 +38,7 @@ const baseLinks = [
 export default function NavMobile() {
   const [showSidebar, setShowSidebar] = useState(false);
   const { user } = useAuth();
+  const { totalItens } = useCart();
   const links = [
     { href: user ? "/conta" : "/entrar", label: user ? "Minha Conta" : "Entrar", icon: faUser },
     ...baseLinks,
@@ -52,13 +54,23 @@ export default function NavMobile() {
             className="w-14 rounded-full ring-2 ring-gold/60"
           />
         </Link>
-        <button
-          aria-label="Abrir menu"
-          onClick={() => setShowSidebar(!showSidebar)}
-          className="flex h-10 w-10 items-center justify-center rounded-full text-gold"
-        >
-          <FontAwesomeIcon icon={faBars} className="text-2xl" />
-        </button>
+        <div className="flex items-center gap-4">
+          <Link href="/carrinho" className="relative text-gold">
+            <FontAwesomeIcon icon={faCartShopping} className="text-2xl" />
+            {totalItens > 0 && (
+              <span className="absolute -right-2 -top-2 flex h-4 w-4 items-center justify-center rounded-full bg-terracotta text-[10px] font-bold text-cream">
+                {totalItens}
+              </span>
+            )}
+          </Link>
+          <button
+            aria-label="Abrir menu"
+            onClick={() => setShowSidebar(!showSidebar)}
+            className="flex h-10 w-10 items-center justify-center rounded-full text-gold"
+          >
+            <FontAwesomeIcon icon={faBars} className="text-2xl" />
+          </button>
+        </div>
       </div>
 
       {showSidebar && (

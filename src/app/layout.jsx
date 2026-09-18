@@ -3,6 +3,7 @@ import NavBar from './components/NavBar'
 import '../app/styles/globals.css'
 import { Fraunces, Inter } from 'next/font/google'
 import { AuthProvider } from './context/AuthContext'
+import { CartProvider } from './context/CartContext'
 
 const display = Fraunces({
   subsets: ['latin'],
@@ -25,9 +26,11 @@ export default function RootLayout({ children }) {
         className={`${display.variable} ${sans.variable} min-h-screen bg-light font-sans text-primary`}
       >
         <AuthProvider>
-          <NavBar />
-          {children}
-          <Footer />
+          <CartProvider>
+            <NavBar />
+            {children}
+            <Footer />
+          </CartProvider>
         </AuthProvider>
       </body>
     </html>
