@@ -20,7 +20,13 @@ function extrairDadosExibicao(pagarmeOrder) {
   if (transacao.line || transacao.barcode) {
     return { tipo: "boleto", url: transacao.url, linhaDigitavel: transacao.line, codigoBarras: transacao.barcode, vencimento: transacao.due_at };
   }
-  return { tipo: "credit_card", status: transacao.status, mensagem: transacao.acquirer_message };
+  return {
+    tipo: "credit_card",
+    status: transacao.status,
+    mensagem: transacao.acquirer_message,
+    parcelas: transacao.installments,
+    valorTotal: charge.amount ? charge.amount / 100 : undefined,
+  };
 }
 
 function statusPagamento(pagarmeOrder) {
@@ -38,7 +44,7 @@ export async function POST(request) {
       return Response.json({ error: "Não autenticado." }, { status: 401 });
     }
 
-    const { orderId, paymentMethod, cardToken, cpf } = await request.json();
+    const { orderId, paymentMethod, cardToken, cpf, installments } = await request.json();
     if (!orderId || !paymentMethod) {
       return Response.json({ error: "orderId e paymentMethod são obrigatórios." }, { status: 400 });
     }
@@ -80,6 +86,7 @@ export async function POST(request) {
       },
       paymentMethod,
       cardToken,
+      installments,
     });
 
     const novoStatusPagamento = statusPagamento(pagarmeOrder);

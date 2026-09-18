@@ -6,12 +6,14 @@ import { faCreditCard, faTriangleExclamation } from "@fortawesome/free-solid-svg
 
 const formatarNumero = (v) => v.replace(/\D/g, "").slice(0, 16).replace(/(\d{4})(?=\d)/g, "$1 ");
 const formatarValidade = (v) => v.replace(/\D/g, "").slice(0, 4).replace(/(\d{2})(?=\d)/, "$1/");
+const formatBRL = (v) => Number(v).toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
 
-export default function CardPaymentForm({ onToken, processando }) {
+export default function CardPaymentForm({ onToken, processando, valorTotal }) {
   const [numero, setNumero] = useState("");
   const [nome, setNome] = useState("");
   const [validade, setValidade] = useState("");
   const [cvv, setCvv] = useState("");
+  const [parcelas, setParcelas] = useState(1);
   const [tokenizando, setTokenizando] = useState(false);
   const [erro, setErro] = useState("");
 
@@ -36,7 +38,7 @@ export default function CardPaymentForm({ onToken, processando }) {
     setTokenizando(true);
     try {
       const token = await tokenizarCartao({ numero, nome, mes, ano, cvv });
-      onToken(token);
+      onToken(token, parcelas);
     } catch (e) {
       setErro(e.message);
     } finally {
@@ -80,6 +82,23 @@ export default function CardPaymentForm({ onToken, processando }) {
         />
       </div>
 
+      <div>
+        <label className="mb-1 block text-left text-xs font-medium text-primary/60">Parcelas</label>
+        <select
+          value={parcelas}
+          onChange={(e) => setParcelas(Number(e.target.value))}
+          className="w-full rounded-lg border border-cardBorder bg-white px-4 py-2.5 outline-none focus:border-gold"
+        >
+          {Array.from({ length: 12 }, (_, i) => i + 1).map((n) => (
+            <option key={n} value={n}>
+              {n === 1
+                ? `À vista &mdash; ${formatBRL(valorTotal)}`.replace("&mdash;", "—")
+                : `${n}x de ${formatBRL(valorTotal / n)}`}
+            </option>
+          ))}
+        </select>
+      </div>
+
       {erro && (
         <p className="flex items-center gap-2 text-sm text-terracotta">
           <FontAwesomeIcon icon={faTriangleExclamation} />
@@ -91,7 +110,9 @@ export default function CardPaymentForm({ onToken, processando }) {
         <FontAwesomeIcon icon={faCreditCard} />
         {tokenizando ? "Validando cartão..." : processando ? "Processando pagamento..." : "Pagar com cartão"}
       </button>
-      <p className="text-center text-[11px] text-primary/40">Pagamento único, sem parcelamento por enquanto.</p>
+      <p className="text-center text-[11px] text-primary/40">
+        Valores das parcelas são estimados sem juros; o valor final pode variar conforme as taxas do cartão.
+      </p>
     </form>
   );
 }

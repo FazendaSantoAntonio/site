@@ -70,7 +70,7 @@ function buildItems(orderItems) {
  * paymentMethod: 'pix' | 'boleto' | 'credit_card'
  * cardToken: obrigatório apenas para credit_card (gerado no navegador com a chave pública)
  */
-export async function criarPedidoPagamento({ order, orderItems, comprador, paymentMethod, cardToken }) {
+export async function criarPedidoPagamento({ order, orderItems, comprador, paymentMethod, cardToken, installments }) {
   const payment = { payment_method: paymentMethod };
 
   if (paymentMethod === "pix") {
@@ -82,7 +82,11 @@ export async function criarPedidoPagamento({ order, orderItems, comprador, payme
     };
   } else if (paymentMethod === "credit_card") {
     if (!cardToken) throw new Error("cardToken é obrigatório para pagamento com cartão.");
-    payment.credit_card = { card_token: cardToken, statement_descriptor: "FAZENDASTOANTONIO" };
+    payment.credit_card = {
+      card_token: cardToken,
+      installments: Math.min(Math.max(Number(installments) || 1, 1), 12),
+      statement_descriptor: "FAZENDASTOANTONIO",
+    };
   } else {
     throw new Error(`Forma de pagamento inválida: ${paymentMethod}`);
   }

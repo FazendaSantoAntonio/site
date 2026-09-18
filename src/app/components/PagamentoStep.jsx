@@ -45,7 +45,7 @@ export default function PagamentoStep({ order, profileCpf }) {
 
   const cpfValido = () => (profileCpf || cpf).replace(/\D/g, "").length === 11;
 
-  const criarPagamento = async (novoMetodo, cardToken) => {
+  const criarPagamento = async (novoMetodo, cardToken, installments) => {
     setErro("");
     if (!cpfValido()) {
       setErro("Informe um CPF válido para continuar.");
@@ -62,7 +62,7 @@ export default function PagamentoStep({ order, profileCpf }) {
       const res = await fetch("/api/pagamentos/criar", {
         method: "POST",
         headers: { "Content-Type": "application/json", Authorization: `Bearer ${accessToken}` },
-        body: JSON.stringify({ orderId: order.id, paymentMethod: novoMetodo, cardToken, cpf }),
+        body: JSON.stringify({ orderId: order.id, paymentMethod: novoMetodo, cardToken, cpf, installments }),
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || "Erro ao gerar pagamento.");
@@ -100,7 +100,11 @@ export default function PagamentoStep({ order, profileCpf }) {
         <FontAwesomeIcon icon={faCircleCheck} className="text-4xl text-olive" />
         <h2 className="font-display text-2xl text-primary">Pagamento confirmado!</h2>
         <p className="max-w-sm text-primary/70">
-          Recebemos seu pagamento. Vamos preparar seu pedido com carinho.
+          Recebemos seu pagamento
+          {resultado?.tipo === "credit_card" && resultado.parcelas > 1
+            ? ` em ${resultado.parcelas}x`
+            : ""}
+          . Vamos preparar seu pedido com carinho.
         </p>
         <Link href="/conta" className="btn-primary">Ver meus pedidos</Link>
       </div>
@@ -179,7 +183,8 @@ export default function PagamentoStep({ order, profileCpf }) {
         )}
         <CardPaymentForm
           processando={processando}
-          onToken={(token) => criarPagamento("credit_card", token)}
+          valorTotal={order.total}
+          onToken={(token, installments) => criarPagamento("credit_card", token, installments)}
         />
         {erro && (
           <p className="flex items-center gap-2 text-sm text-terracotta">
