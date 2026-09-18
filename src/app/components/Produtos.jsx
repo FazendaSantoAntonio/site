@@ -4,105 +4,134 @@ import Link from "next/link";
 import React, { useEffect, useState } from "react";
 import { db } from "../../../config/firebase";
 import { collection, getDocs } from "firebase/firestore";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faAward } from "@fortawesome/free-solid-svg-icons";
+import { faWhatsapp } from "@fortawesome/free-brands-svg-icons";
 
-const Card = ({ foto, titulo, shortdescription, preco, linkpagamento }) => {
-  const precoAtual = preco;
+const isPremiado = (text = "") => /pr[eê]mio|premiad/i.test(text);
+
+const Card = ({ id, foto, titulo, shortdescription, preco }) => {
   const numberFormatted = preco.toLocaleString("pt-BR", {
     style: "currency",
     currency: "BRL",
   });
 
-  // const numberFormatted = precoAtual.toLocaleString('pt-BR', { maximumFractionDigits: 2 });
   return (
-    <div className="text-primary flex flex-col justify-center items-center w-72 bg-primary/20  shadow-md shadow-black/30">
-      <Image
-        src={foto}
-        alt={titulo}
-        height={300}
-        width={300}
-        className="rounded"
-      />
-      <div className="mt-5 flex flex-col justify-center items-center">
-        <span className="font-bold text-xl text-center mb-2">{titulo}</span>
-        <span className="text-center mb-2">{shortdescription}</span>
-        <span className="font-bold text-xl text-orange-500 mt-4 mb-2">
-          {numberFormatted}
-        </span>
-      </div>
-      <div className="flex gap-5 my-5">
-        <Link
-          // href={linkpagamento}
-          href={"https://wa.me/5535998647172?text=Tenho%20interesse%20em%20comprar%20seus%20produtos"}
-          className="flex justify-center items-center bg-primary text-secondary font-bold px-5 py-2 rounded border-2 border-secondary hover:text-primary hover:bg-secondary transition-all duration-300"
-        >
-          Comprar
+    <div className="card-surface group flex flex-col overflow-hidden transition-all duration-300 hover:-translate-y-1 hover:shadow-card">
+      <Link href={`/detalhes?id=${id}`} className="relative block aspect-square overflow-hidden bg-cream">
+        <Image
+          src={foto}
+          alt={titulo}
+          fill
+          sizes="(min-width: 768px) 25vw, 50vw"
+          className="object-cover transition-transform duration-500 group-hover:scale-105"
+        />
+        {isPremiado(shortdescription) && (
+          <span className="absolute left-3 top-3 flex items-center gap-1.5 rounded-full bg-primary/90 px-3 py-1 text-[11px] font-semibold uppercase tracking-wide text-gold">
+            <FontAwesomeIcon icon={faAward} />
+            Premiado
+          </span>
+        )}
+      </Link>
+      <div className="flex flex-1 flex-col p-5">
+        <Link href={`/detalhes?id=${id}`}>
+          <h3 className="font-display text-lg text-primary transition-colors duration-300 hover:text-terracotta">
+            {titulo}
+          </h3>
         </Link>
-        {/* <Link href="/" className="flex justify-center items-center bg-secondary text-primary font-bold px-5 py-2 rounded border-2 border-secondary hover:text-secondary hover:bg-primary transition-all duration-300">Detalhes</Link> */}
+        <p className="mt-1 line-clamp-2 flex-1 text-sm text-primary/60">
+          {shortdescription}
+        </p>
+        <div className="mt-4 flex items-center justify-between">
+          <span className="font-display text-xl text-terracotta">
+            {numberFormatted}
+          </span>
+          <Link
+            href={`https://wa.me/5535998647172?text=${encodeURIComponent(
+              `Olá! Tenho interesse em comprar: ${titulo}`
+            )}`}
+            target="_blank"
+            className="flex items-center gap-2 rounded-full bg-primary px-4 py-2 text-xs font-semibold text-cream transition-all duration-300 hover:bg-terracotta"
+          >
+            <FontAwesomeIcon icon={faWhatsapp} />
+            Comprar
+          </Link>
+        </div>
       </div>
     </div>
   );
 };
 
-function DatabaseRead({ currentPage, itemsPerPage }) {
-  const [produto, setProduto] = useState([]);
+const CardSkeleton = () => (
+  <div className="card-surface flex flex-col overflow-hidden">
+    <div className="aspect-square animate-pulse bg-cardBorder" />
+    <div className="flex flex-col gap-3 p-5">
+      <div className="h-4 w-2/3 animate-pulse rounded bg-cardBorder" />
+      <div className="h-3 w-full animate-pulse rounded bg-cardBorder" />
+      <div className="h-6 w-1/3 animate-pulse rounded bg-cardBorder" />
+    </div>
+  </div>
+);
+
+function DatabaseRead({ currentPage, itemsPerPage, produto, loading }) {
   const startIndex = (currentPage - 1) * itemsPerPage;
   const endIndex = startIndex + itemsPerPage;
+  const pageItems = produto.slice(startIndex, endIndex);
 
-  useEffect(() => {
-    async function fetchData() {
-      try {
-        async function getProduto() {
-          const dataCollection = collection(db, "produtos");
-          const dataSnapshot = await getDocs(dataCollection);
-          const dataList = dataSnapshot.docs.map((doc) => doc.data());
-          setProduto(dataList.slice(startIndex, endIndex));
-        }
-        getProduto();
-      } catch (error) {
-        console.error("Erro:", error);
-      }
-    }
+  if (loading) {
+    return (
+      <div className="grid w-full grid-cols-2 gap-5 md:grid-cols-4">
+        {Array.from({ length: itemsPerPage }).map((_, i) => (
+          <CardSkeleton key={i} />
+        ))}
+      </div>
+    );
+  }
 
-    fetchData();
-  }, [currentPage]);
+  if (pageItems.length === 0) {
+    return (
+      <p className="py-10 text-center text-primary/60">
+        Nenhum produto disponível no momento. Volte em breve!
+      </p>
+    );
+  }
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 items-center justify-center gap-5 pb-10">
-      {produto.map((item) => {
+    <div className="grid w-full grid-cols-2 gap-5 md:grid-cols-4">
+      {pageItems.map((item) => {
         if (Array.isArray(item.imagens) && item.imagens.length > 0) {
-          const primeiroLink = item.imagens[0];
           return (
             <Card
-              key={item.id}
+              key={item._docId}
+              id={item._docId}
               titulo={item.produto}
               shortdescription={item.shortdescription}
               preco={item.valor}
-              foto={primeiroLink}
-              ratings={item.avaliacao}
-              linkpagamento={item.linkpagamento}
+              foto={item.imagens[0]}
             />
           );
         }
+        return null;
       })}
     </div>
   );
 }
+
 const Pagination = ({ currentPage, totalPages, setCurrentPage }) => {
+  if (totalPages <= 1) return null;
   const pages = [...Array(totalPages).keys()].map((page) => page + 1);
 
   return (
-    <div className="pagination space-x-5">
+    <div className="mt-10 flex gap-2">
       {pages.map((page) => (
         <button
           key={page}
           onClick={() => setCurrentPage(page)}
-          className={`px-2 rounded-full mr-2 
-           ${
-             currentPage === page
-               ? "bg-primary text-white"
-               : "bg-white text-secondary hover:bg-secondary"
-           }
-         `}
+          className={`h-9 w-9 rounded-full text-sm font-semibold transition-all duration-300 ${
+            currentPage === page
+              ? "bg-primary text-cream"
+              : "bg-cream text-primary hover:bg-gold/30"
+          }`}
         >
           {page}
         </button>
@@ -113,34 +142,51 @@ const Pagination = ({ currentPage, totalPages, setCurrentPage }) => {
 
 export default function Produtos() {
   const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 10;
-  const [totalPages, setTotalPages] = useState(1);
+  const [produto, setProduto] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const itemsPerPage = 8;
+  const totalPages = Math.max(1, Math.ceil(produto.length / itemsPerPage));
 
   useEffect(() => {
-    async function fetchTotalItems() {
+    async function fetchData() {
       try {
         const dataCollection = collection(db, "produtos");
         const dataSnapshot = await getDocs(dataCollection);
-        const totalItems = dataSnapshot.docs.length;
-        const calculatedTotalPages = Math.ceil(totalItems / itemsPerPage);
-        setTotalPages(calculatedTotalPages);
+        const dataList = dataSnapshot.docs.map((doc) => ({ ...doc.data(), _docId: doc.id }));
+        setProduto(dataList);
       } catch (error) {
-        console.error("Erro ao obter total de itens:", error);
+        console.error("Erro ao carregar produtos:", error);
+      } finally {
+        setLoading(false);
       }
     }
-    fetchTotalItems();
+    fetchData();
   }, []);
+
   return (
-    <div className="flex flex-col justify-center items-center py-16 md:p-16">
-      <h2 className="text-primary font-bold text-4xl">Produtos</h2>
-      <div className="mt-10 flex flex-wrap justify-center items-center">
-        <DatabaseRead currentPage={currentPage} itemsPerPage={itemsPerPage} />
+    <section id="produtos" className="bg-light py-20">
+      <div className="container-page flex flex-col items-center">
+        <span className="eyebrow">Nossa produção</span>
+        <h2 className="section-title mt-2 text-center">Produtos</h2>
+        <p className="mt-3 max-w-xl text-center text-primary/60">
+          Queijos maturados, defumados e temperados &mdash; feitos à mão, com
+          leite cru e muito cuidado.
+        </p>
+
+        <div className="mt-12 flex w-full flex-wrap items-center justify-center">
+          <DatabaseRead
+            currentPage={currentPage}
+            itemsPerPage={itemsPerPage}
+            produto={produto}
+            loading={loading}
+          />
+        </div>
+        <Pagination
+          currentPage={currentPage}
+          totalPages={totalPages}
+          setCurrentPage={setCurrentPage}
+        />
       </div>
-      <Pagination
-        currentPage={currentPage}
-        totalPages={totalPages}
-        setCurrentPage={setCurrentPage}
-      />
-    </div>
+    </section>
   );
 }

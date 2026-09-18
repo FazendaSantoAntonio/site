@@ -1,7 +1,7 @@
 export default function PoliticaDeTrocaDevolucao() {
   return (
-    <div className="flex flex-col py-16 px-5 md:p-16 text-primary bg-light">
-      <h2 className="text-4xl font-bold flex justify-center items-center w-full py-10">
+    <div className="flex flex-col py-16 px-5 md:p-16 text-primary bg-light max-w-3xl mx-auto">
+      <h2 className="font-display text-4xl flex justify-center items-center w-full py-10 text-center">
         Política de Troca e Devolução
       </h2>
       <p>

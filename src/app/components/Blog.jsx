@@ -1,56 +1,70 @@
-import React from "react"
-import Image from "next/image"
-import Link from "next/link"
+import React from "react";
+import Image from "next/image";
+import Link from "next/link";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faArrowRight } from "@fortawesome/free-solid-svg-icons";
 
 export const ArtigosdoBlog = [
   {
     id: 3,
-    src: '/blog3.jpg',
-    title: 'Segredos para Armazenar Queijos: Mantenha o Sabor e a Textura intactos!',
-    href: '/Blog/armazenar'
+    src: "/blog3.jpg",
+    title: "Segredos para armazenar queijos e manter o sabor intacto",
+    href: "/Blog/armazenar",
   },
   {
     id: 2,
-    src: '/blog2.jpg',
-    title: 'Deliciosas combinações com queijo: Explore novos sabores e sensações',
-    href: '/Blog/combinacoes'
+    src: "/blog2.jpg",
+    title: "Deliciosas combinações com queijo para explorar novos sabores",
+    href: "/Blog/combinacoes",
   },
   {
     id: 1,
-    src: '/blog1.jpg',
-    title: 'Descubra as harmonizações perfeitas: Bebidas que combinam com queijos!',
-    href: '/Blog/harmonizacao'
-  }
+    src: "/blog1.jpg",
+    title: "Descubra as harmonizações perfeitas entre bebidas e queijos",
+    href: "/Blog/harmonizacao",
+  },
 ];
 
 const Blog = () => {
   return (
-    <div className="flex flex-col justify-center items-center py-16 md:p-16 bg-white">
-      <h2 className="text-primary font-bold text-4xl mb-8">Blog</h2>
+    <section className="bg-white py-20">
+      <div className="container-page">
+        <div className="flex flex-col items-center text-center">
+          <span className="eyebrow">No blog</span>
+          <h2 className="section-title mt-2">Sabores &amp; Histórias</h2>
+        </div>
 
-      <div className="mt-10 flex flex-wrap justify-center gap-5 md:px-16">
-        {ArtigosdoBlog.map((blog) => (
-          <div key={blog.id} className="text-primary flex flex-col justify-center items-center  w-80 bg-primary/20 rounded shadow-lg shadow-black/40 pb-8">
-            <Image
-              image={blog.src}
-              src={blog.src}
-              alt={blog.title}
-              className="rounded"
-              width={800}
-              height={600}
-            />
-            <span className="font-bold text-xl p-2 text-center pb-8">{blog.title}</span>
+        <div className="mt-12 grid grid-cols-1 gap-6 md:grid-cols-3">
+          {ArtigosdoBlog.map((blog) => (
             <Link
+              key={blog.id}
               href={blog.href}
-              className="flex justify-center items-center bg-primary text-secondary font-bold px-5 py-2 rounded border-2 border-secondary hover:text-primary hover:bg-secondary transition-all duration-300"
+              className="card-surface group flex flex-col overflow-hidden transition-all duration-300 hover:-translate-y-1 hover:shadow-card"
             >
-              Ver mais
+              <div className="relative aspect-[4/3] overflow-hidden">
+                <Image
+                  src={blog.src}
+                  alt={blog.title}
+                  fill
+                  sizes="(min-width: 768px) 33vw, 100vw"
+                  className="object-cover transition-transform duration-500 group-hover:scale-105"
+                />
+              </div>
+              <div className="flex flex-1 flex-col p-6">
+                <h3 className="font-display text-lg leading-snug text-primary">
+                  {blog.title}
+                </h3>
+                <span className="mt-4 flex items-center gap-2 text-sm font-semibold text-terracotta">
+                  Ver mais
+                  <FontAwesomeIcon icon={faArrowRight} className="text-xs transition-transform duration-300 group-hover:translate-x-1" />
+                </span>
+              </div>
             </Link>
-          </div>
-        ))}
+          ))}
+        </div>
       </div>
-    </div>
-  )
-}
+    </section>
+  );
+};
 
 export default Blog;

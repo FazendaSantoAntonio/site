@@ -1,68 +1,134 @@
-"use client"
+"use client";
+import Image from "next/image";
+import Link from "next/link";
+import { useEffect, useState } from "react";
+import { useSearchParams } from "next/navigation";
+import { db } from "../../../config/firebase";
+import { collection, getDocs } from "firebase/firestore";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faStar } from "@fortawesome/free-solid-svg-icons";
-import CarrosselDetalhes from '../components/CarrosselDetalhes';
-import { useState } from 'react';
+import { faAward, faMinus, faPlus } from "@fortawesome/free-solid-svg-icons";
+import { faWhatsapp } from "@fortawesome/free-brands-svg-icons";
 
-
+const isPremiado = (text = "") => /pr[eê]mio|premiad/i.test(text);
 
 export default function Detalhes() {
+  const searchParams = useSearchParams();
+  const id = searchParams.get("id");
 
-  const [count, setCount] = useState(0)
+  const [produto, setProduto] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [activeImage, setActiveImage] = useState(0);
+  const [count, setCount] = useState(1);
+
+  useEffect(() => {
+    async function fetchProduto() {
+      try {
+        const dataCollection = collection(db, "produtos");
+        const dataSnapshot = await getDocs(dataCollection);
+        const dataList = dataSnapshot.docs.map((doc) => ({ ...doc.data(), _docId: doc.id }));
+        const encontrado = dataList.find((item) => item._docId === id);
+        setProduto(encontrado || null);
+      } catch (error) {
+        console.error("Erro ao carregar produto:", error);
+      } finally {
+        setLoading(false);
+      }
+    }
+    fetchProduto();
+  }, [id]);
+
+  if (loading) {
+    return (
+      <div className="container-page flex min-h-[50vh] items-center justify-center bg-light py-20">
+        <p className="text-primary/60">Carregando produto...</p>
+      </div>
+    );
+  }
+
+  if (!produto) {
+    return (
+      <div className="container-page flex min-h-[50vh] flex-col items-center justify-center gap-4 bg-light py-20 text-center">
+        <p className="text-primary/70">Não encontramos esse produto.</p>
+        <Link href="/#produtos" className="btn-primary">Ver todos os produtos</Link>
+      </div>
+    );
+  }
+
+  const numberFormatted = produto.valor?.toLocaleString("pt-BR", {
+    style: "currency",
+    currency: "BRL",
+  });
+  const imagens = produto.imagens || [];
 
   return (
-    <div className="p-16 bg-light">
-      <div className="flex justify-center rounded-lg p-10 ">
-        <div className="flex items-center justify-center  h-full">
-          {/* <CarrosselDetalhes primeira={image} segunda={image} terceira={image} title="foto de um foguete" /> */}
+    <div className="bg-light py-12 md:py-16">
+      <div className="container-page grid grid-cols-1 gap-12 md:grid-cols-2">
+        <div>
+          <div className="relative aspect-square overflow-hidden rounded-2xl bg-white shadow-card">
+            <Image
+              src={imagens[activeImage]}
+              alt={produto.produto}
+              fill
+              sizes="(min-width: 768px) 45vw, 100vw"
+              className="object-cover"
+            />
+            {isPremiado(produto.shortdescription) && (
+              <span className="absolute left-4 top-4 flex items-center gap-1.5 rounded-full bg-primary/90 px-3 py-1 text-xs font-semibold uppercase tracking-wide text-gold">
+                <FontAwesomeIcon icon={faAward} />
+                Premiado
+              </span>
+            )}
+          </div>
+          {imagens.length > 1 && (
+            <div className="mt-4 flex gap-3">
+              {imagens.map((img, i) => (
+                <button
+                  key={img}
+                  onClick={() => setActiveImage(i)}
+                  className={`relative h-16 w-16 overflow-hidden rounded-lg border-2 ${
+                    i === activeImage ? "border-terracotta" : "border-transparent"
+                  }`}
+                >
+                  <Image src={img} alt={produto.produto} fill sizes="64px" className="object-cover" />
+                </button>
+              ))}
+            </div>
+          )}
         </div>
-        <div className=" w-[40%] text-primary">
-          <h2 className="text-5xl pb-2 border-b-2 border-primary font-bold">Queijo</h2>
-          <div className="flex gap-2">
-            <FontAwesomeIcon icon={faStar} className="w-4 text-yellow-500 py-5" />
-            <FontAwesomeIcon icon={faStar} className="w-4 text-yellow-500 py-5" />
-            <FontAwesomeIcon icon={faStar} className="w-4 text-yellow-500 py-5" />
-            <FontAwesomeIcon icon={faStar} className="w-4 text-yellow-500 py-5" />
-            <FontAwesomeIcon icon={faStar} className="w-4 text-yellow-500 py-5" />
-          </div>
-          <p className='text-primary/75'>Lorem ipsum, dolor sit amet consectetur adipisicing elit. Iure beatae quod cumque numquam possimus dolorum dicta voluptates facere eaque, minima cum quidem odit officiis magni rerum quis tempore dolores vero.</p>
-          <div className='flex justify-start items-center gap-2 py-10'>
-            <p className='text-2xl line-through'>$372.00 </p><span className='text-tertiary font-bold text-3xl '>$334.80</span>
-          </div>
-          <div className='flex gap-5'>
-            <div className="flex w-28 items-center justify-center gap-5 border border-white ">
-              <button
-                className="text-3xl text-white w-full h-full bg-secondary hover:text-primary hover:bg-white transition-all duration-300"
-                onClick={() => setCount(count - 1)}
-              >
-                -
+
+        <div className="text-primary">
+          <h1 className="font-display text-3xl md:text-4xl">{produto.produto}</h1>
+          <p className="mt-3 text-primary/60">{produto.shortdescription}</p>
+          <p className="mt-6 font-display text-3xl text-terracotta">{numberFormatted}</p>
+
+          <div className="mt-8 flex items-center gap-5">
+            <div className="flex items-center gap-4 rounded-full border border-cardBorder px-4 py-2">
+              <button aria-label="Diminuir quantidade" onClick={() => setCount(Math.max(1, count - 1))} className="text-primary/60 hover:text-terracotta">
+                <FontAwesomeIcon icon={faMinus} />
               </button>
-              <p className="text-xl text-vermelho">{count}</p>
-              <button
-                className="text-3xl text-white w-full h-full bg-secondary hover:text-primary hover:bg-white transition-all duration-300"
-                onClick={() => setCount(count + 1)}
-              >
-                +
+              <span className="w-6 text-center">{count}</span>
+              <button aria-label="Aumentar quantidade" onClick={() => setCount(count + 1)} className="text-primary/60 hover:text-terracotta">
+                <FontAwesomeIcon icon={faPlus} />
               </button>
             </div>
-            <button className='bg-primary px-5 py-2 text-secondary hover:bg-white hover:text-primary font-bold transition-all duration-300'>
+
+            <Link
+              href={`https://wa.me/5535998647172?text=${encodeURIComponent(
+                `Olá! Tenho interesse em comprar: ${produto.produto} (quantidade: ${count})`
+              )}`}
+              target="_blank"
+              className="btn-primary"
+            >
+              <FontAwesomeIcon icon={faWhatsapp} />
               Comprar
-            </button>
+            </Link>
+          </div>
+
+          <div className="mt-10 border-t border-cardBorder pt-6 text-sm text-primary/60">
+            <p>Queijo artesanal, produzido com leite cru na Fazenda Santo Antônio, em Alagoa &mdash; MG.</p>
           </div>
         </div>
       </div>
-      <div className='p-10'>
-        <h2 className='text-tertiary font-bold text-xl py-5'>Descrição Completa</h2>
-        <p>Lorem ipsum dolor sit, amet consectetur adipisicing elit. Atque, sit. Eligendi, obcaecati similique. Pariatur rem dolore ut eius, suscipit nam laboriosam, consequatur, nostrum earum obcaecati quas nemo odit sapiente cumque.
-        </p><br />
-        <p>Lorem ipsum dolor sit, amet consectetur adipisicing elit. Atque, sit. Eligendi, obcaecati similique. Pariatur rem dolore ut eius, suscipit nam laboriosam, consequatur, nostrum earum obcaecati quas nemo odit sapiente cumque.
-        </p><br />
-        <p>Lorem ipsum dolor sit, amet consectetur adipisicing elit. Atque, sit. Eligendi, obcaecati similique. Pariatur rem dolore ut eius, suscipit nam laboriosam, consequatur, nostrum earum obcaecati quas nemo odit sapiente cumque.
-        </p>
-        <p>Lorem ipsum dolor sit, amet consectetur adipisicing elit. Atque, sit. Eligendi, obcaecati similique. Pariatur rem dolore ut eius, suscipit nam laboriosam, consequatur, nostrum earum obcaecati quas nemo odit sapiente cumque.
-        </p><br />
-      </div>
-      
     </div>
-  )
+  );
 }

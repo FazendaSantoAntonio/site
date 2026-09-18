@@ -1,94 +1,48 @@
-"use client"
+"use client";
 import Image from "next/image";
 import { useState } from "react";
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faTrashAlt } from "@fortawesome/free-solid-svg-icons";
-
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faTrashAlt, faMinus, faPlus } from "@fortawesome/free-solid-svg-icons";
 
 export default function ItemCarrinho({ foto, sku, estoque, preco, titulo, subtotal }) {
-    const [count, setCount] = useState(0)
-    return (
-        <div className="flex felx-col">
-            <div className="flex flex-row w-72 h-24 border-x border-b border-primary justify-center items-center">
-                <div>
-                    <Image src={foto} alt={titulo} width={100} className="mr-5" />
-                </div>
-                <div>
-                    <p className="font-bold">{titulo}</p>
-                    <p>SKU: {sku}</p>
-                    <p>Estoque: {estoque}</p>
-                </div>
-            </div>
-            <div className="flex justify-center items-center font-bold text-xl w-44 border-b border-r border-primary">
-                R${preco}
-            </div>
-            <div className="flex justify-center items-center w-44 border-b border-r border-primary">
-                <div className="flex w-28 items-center justify-center gap-5 border border-white ">
-                    <button
-                        className="text-3xl text-white w-full h-full bg-secondary hover:text-primary hover:bg-white transition-all duration-300"
-                        onClick={() => setCount(count - 1)}
-                    >
-                        -
-                    </button>
-                    <p className="text-xl text-vermelho">{count}</p>
-                    <button
-                        className="text-3xl text-white w-full h-full bg-secondary hover:text-primary hover:bg-white transition-all duration-300"
-                        onClick={() => setCount(count + 1)}
-                    >
-                        +
-                    </button>
-                </div>
-            </div>
-            <div className="flex justify-center items-center font-bold text-xl w-44 border-b border-r border-primary">
-                R${subtotal}
-            </div>
-            <div className="flex justify-center items-center font-bold text-xl w-44 border-b border-r border-primary">
-                <button><FontAwesomeIcon icon={faTrashAlt}/></button>
-            </div>
-        </div>
-    )
-}
+  const [count, setCount] = useState(1);
 
-export function ItemCarrinhoMobile({ foto, sku, estoque, preco, titulo, subtotal }) {
-    const [count, setCount] = useState(0)
-    return (
-        <div className="flex">
-            <div className="flex flex-row w-72 h-24 border-x border-b border-primary justify-center items-center">
-                <div>
-                    <Image src={foto} alt={titulo} width={100} className="mr-5" />
-                </div>
-                <div>
-                    <p className="font-bold">{titulo}</p>
-                    <p>SKU: {sku}</p>
-                    <p>Estoque: {estoque}</p>
-                </div>
-            </div>
-            <div className="flex justify-center items-center font-bold text-xl w-44 border-b border-r border-primary">
-                R${preco}
-            </div>
-            <div className="flex justify-center items-center w-44 border-b border-r border-primary">
-                <div className="flex w-28 items-center justify-center gap-5 border border-white ">
-                    <button
-                        className="text-3xl text-white w-full h-full bg-secondary hover:text-primary hover:bg-white transition-all duration-300"
-                        onClick={() => setCount(count - 1)}
-                    >
-                        -
-                    </button>
-                    <p className="text-xl text-vermelho">{count}</p>
-                    <button
-                        className="text-3xl text-white w-full h-full bg-secondary hover:text-primary hover:bg-white transition-all duration-300"
-                        onClick={() => setCount(count + 1)}
-                    >
-                        +
-                    </button>
-                </div>
-            </div>
-            <div className="flex justify-center items-center font-bold text-xl w-44 border-b border-r border-primary">
-                R${subtotal}
-            </div>
-            <div className="flex justify-center items-center font-bold text-xl w-44 border-b border-r border-primary">
-                <button><FontAwesomeIcon icon={faTrashAlt}/></button>
-            </div>
+  return (
+    <div className="grid grid-cols-[1fr_11rem_11rem_11rem_5rem] items-center border-x border-b border-cardBorder bg-white text-primary">
+      <div className="flex items-center gap-4 p-3">
+        <Image src={foto} alt={titulo} width={64} height={64} className="rounded-lg object-cover" />
+        <div>
+          <p className="font-display text-base text-primary">{titulo}</p>
+          <p className="text-xs text-primary/50">SKU: {sku}</p>
+          <p className="text-xs text-primary/50">{estoque}</p>
         </div>
-    )
+      </div>
+      <div className="flex justify-center font-semibold text-terracotta">R$ {preco}</div>
+      <div className="flex justify-center">
+        <div className="flex items-center gap-4 rounded-full border border-cardBorder px-3 py-1.5">
+          <button
+            aria-label="Diminuir quantidade"
+            className="text-primary/60 transition-colors duration-300 hover:text-terracotta"
+            onClick={() => setCount(Math.max(1, count - 1))}
+          >
+            <FontAwesomeIcon icon={faMinus} />
+          </button>
+          <span className="w-4 text-center">{count}</span>
+          <button
+            aria-label="Aumentar quantidade"
+            className="text-primary/60 transition-colors duration-300 hover:text-terracotta"
+            onClick={() => setCount(count + 1)}
+          >
+            <FontAwesomeIcon icon={faPlus} />
+          </button>
+        </div>
+      </div>
+      <div className="flex justify-center font-semibold text-terracotta">R$ {subtotal}</div>
+      <div className="flex justify-center">
+        <button aria-label="Remover item" className="text-primary/50 transition-colors duration-300 hover:text-terracotta">
+          <FontAwesomeIcon icon={faTrashAlt} />
+        </button>
+      </div>
+    </div>
+  );
 }

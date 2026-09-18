@@ -2,11 +2,8 @@ import Image from "next/image";
 import logo from "../../../public/logo.png";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
-  faComments,
-  faHome,
   faShoppingCart,
-  faUser,
-  faWarning,
+  faTruck,
 } from "@fortawesome/free-solid-svg-icons";
 import Link from "next/link";
 import NavMobile from "./NavMobile";
@@ -16,13 +13,12 @@ import {
   faWhatsapp,
 } from "@fortawesome/free-brands-svg-icons";
 
-const CustonLink = ({ title, icon, link }) => {
+const CustomLink = ({ title, link }) => {
   return (
     <Link
       href={link}
-      className="flex w-36 text-primary flex-col justify-center items-center hover:text-[#000] transition-all duration-300"
+      className="font-sans text-sm font-medium tracking-wide text-cream/90 transition-colors duration-300 hover:text-gold"
     >
-      <FontAwesomeIcon icon={icon} className="h-5" />
       {title}
     </Link>
   );
@@ -30,64 +26,72 @@ const CustonLink = ({ title, icon, link }) => {
 
 export default function NavBar() {
   return (
-    <div>
-      <div className="fixed flex justify-center md:justify-between items-center px-5 bg-[#FFDE99] w-screen z-10 backdrop-blur-md top-0 z-20">
-        <div className="p-3 flex">
-          <p className="justify-center items-center text-sm text-[#4A241D]">
-            <FontAwesomeIcon icon={faWarning} className="mr-2" /> Frete grátis
-            para compras acima de R$ 1.000,00. Atendemos também ao varejo,
-            consulte-nos!
-          </p>
-        </div>
-        <div className="p-3 flex">
+    <div className="sticky top-0 z-30">
+      {/* Barra utilitária */}
+      <div className="hidden items-center justify-between bg-primary px-6 py-2 text-cream md:flex">
+        <p className="flex items-center gap-2 font-sans text-xs tracking-wide text-cream/80">
+          <FontAwesomeIcon icon={faTruck} className="text-gold" />
+          Frete grátis para compras acima de R$ 1.000,00 &middot; Atendemos
+          também ao varejo, consulte-nos
+        </p>
+        <div className="flex items-center gap-4">
           <Link
             href="https://www.instagram.com/queijofazendasantoantonio/"
             target="_blank"
-            className="text-[#4A241D] hover:text-[#000000] transition-all duration-300 flex justify-center items-center font-bold"
+            className="text-cream/80 transition-colors duration-300 hover:text-gold"
           >
-            <FontAwesomeIcon icon={faInstagram} className="mr-2" />
+            <FontAwesomeIcon icon={faInstagram} />
           </Link>
           <Link
             href="https://www.facebook.com/queijofazendasantoantonio"
             target="_blank"
-            className="flex justify-center items-center text-[#4A241D] hover:text-[#000000] transition-all duration-300 pl-3"
+            className="text-cream/80 transition-colors duration-300 hover:text-gold"
           >
-            <FontAwesomeIcon icon={faFacebook} className="mr-2" />
+            <FontAwesomeIcon icon={faFacebook} />
           </Link>
           <Link
             href="https://wa.me/+553598647172"
             target="_blank"
-            className="flex justify-center items-center transition-all duration-300 text-[#4A241D] hover:text-[#000000] pl-3"
+            className="text-cream/80 transition-colors duration-300 hover:text-gold"
           >
-            <FontAwesomeIcon icon={faWhatsapp} className="text-xl mr-2" />
+            <FontAwesomeIcon icon={faWhatsapp} />
           </Link>
         </div>
       </div>
 
       <NavMobile />
 
-      <nav className="hidden md:flex w-screen bg-[#FFEFCA] justify-center items-center h-28 mt-10">
-        <CustonLink link="/" title="Início" icon={faHome} />
+      {/* Nav principal */}
+      <nav className="hidden w-full items-center justify-between border-b border-gold/30 bg-primary px-8 py-4 md:flex">
+        <div className="flex items-center gap-8">
+          <Link href="/" className="shrink-0">
+            <Image
+              src={logo}
+              width={64}
+              height={64}
+              alt="Queijo Fazenda Santo Antônio"
+              className="rounded-full ring-2 ring-gold/60"
+            />
+          </Link>
+          <div className="flex items-center gap-7">
+            <CustomLink link="/" title="Início" />
+            <CustomLink link="/#produtos" title="Produtos" />
+            <CustomLink link="/rota" title="Rota do Queijo" />
+            <CustomLink link="/quem-somos" title="Quem Somos" />
+          </div>
+        </div>
 
-        <CustonLink link="/quem-somos" title="Quem Somos" icon={faUser} />
-        <Link href="/">
-          <Image
-            src={logo}
-            width={100}
-            alt="Queijo Fazenda Santo Antônio"
-            className="rounded-full hidden md:block "
-          />
-        </Link>
-
-        <CustonLink link="/" title="Carrinho" icon={faShoppingCart} />
-
-        <CustonLink
-          link="/fale-conosco"
-          title="Atendimento"
-          icon={faComments}
-        />
+        <div className="flex items-center gap-6">
+          <CustomLink link="/fale-conosco" title="Atendimento" />
+          <Link
+            href="/carrinho"
+            className="flex items-center gap-2 rounded-full border border-gold/50 px-4 py-2 text-sm font-medium text-cream transition-all duration-300 hover:bg-gold hover:text-primary"
+          >
+            <FontAwesomeIcon icon={faShoppingCart} />
+            Carrinho
+          </Link>
+        </div>
       </nav>
-      
     </div>
   );
 }

@@ -8,94 +8,95 @@ import {
   faInstagram,
   faWhatsapp,
 } from "@fortawesome/free-brands-svg-icons";
+import { faLocationDot } from "@fortawesome/free-solid-svg-icons";
 
 export default function Footer() {
   const data = new Date();
   const ano = data.getFullYear();
 
   return (
-    <div className="flex flex-col justify-center items-center w-screen">
-      <div className="bg-primary p-16 md:p-2 md:py-5 flex flex-col md:flex-row justify-center gap-16 w-screen text-secondary md:space-y-5">
-        <div className="flex flex-col justify-center align-center items-center">
+    <footer className="w-full bg-primary text-cream">
+      <div className="container-page grid grid-cols-1 gap-12 py-16 md:grid-cols-[1.2fr_1fr_1fr]">
+        <div className="flex flex-col items-center gap-4 text-center md:items-start md:text-left">
           <Image
             src={logo}
             alt="Queijo Fazenda Santo Antônio"
-            className="w-48"
+            className="w-32 rounded-full ring-2 ring-gold/50"
           />
+          <p className="max-w-xs font-sans text-sm leading-relaxed text-cream/70">
+            Queijos artesanais produzidos com leite cru na Fazenda Santo
+            Antônio, em Alagoa &mdash; MG. Tradição de família, premiada no
+            Brasil e na França.
+          </p>
         </div>
-        <div className="flex flex-col text-center align-center">
-          <h2 className="uppercase font-bold">Institucional</h2>
-          <Link
-            href="fale-conosco"
-            className="hover:text-light transition-all duration-300 pt-8"
-          >
+
+        <div className="flex flex-col items-center gap-3 text-center md:items-start md:text-left">
+          <h2 className="eyebrow text-gold">Institucional</h2>
+          <Link href="/quem-somos" className="text-sm text-cream/80 transition-colors duration-300 hover:text-gold">
+            Quem Somos
+          </Link>
+          <Link href="/fale-conosco" className="text-sm text-cream/80 transition-colors duration-300 hover:text-gold">
             Fale Conosco
           </Link>
-          <Link
-            href="/politica-de-privacidade"
-            className="hover:text-light transition-all duration-300"
-          >
+          <Link href="/politica-de-privacidade" className="text-sm text-cream/80 transition-colors duration-300 hover:text-gold">
             Política de Privacidade
           </Link>
-          <Link
-            href="politica-de-troca-e-devolucao"
-            className="hover:text-light transition-all duration-300"
-          >
+          <Link href="/politica-de-troca-e-devolucao" className="text-sm text-cream/80 transition-colors duration-300 hover:text-gold">
             Políticas de Troca e Devolução
-          </Link>
-          <Link
-            href="quem-somos"
-            className="hover:text-light transition-all duration-300"
-          >
-            Quem Somos
           </Link>
         </div>
 
-        <div className="flex flex-col text-center align-center">
-          <h2 className="w-72 text-center mb-5">
-            Estrada Alagoa-Itamonte, KM 2, Bairro Prateado
-          </h2>
+        <div className="flex flex-col items-center gap-3 text-center md:items-start md:text-left">
+          <h2 className="eyebrow text-gold">Contato</h2>
+          <p className="flex items-start gap-2 text-sm text-cream/80">
+            <FontAwesomeIcon icon={faLocationDot} className="mt-1 text-gold" />
+            Estrada Alagoa&ndash;Itamonte, KM 2, Bairro Prateado
+          </p>
+          <Link
+            href="https://wa.me/+553598647172"
+            target="_blank"
+            className="flex items-center gap-2 text-sm text-cream/80 transition-colors duration-300 hover:text-gold"
+          >
+            <FontAwesomeIcon icon={faWhatsapp} />
+            +55 (35) 99864-7172
+          </Link>
           <Link
             href="https://www.instagram.com/queijofazendasantoantonio/"
             target="_blank"
-            className="flex justify-center align-center items-center hover:text-light transition-all duration-300"
+            className="flex items-center gap-2 text-sm text-cream/80 transition-colors duration-300 hover:text-gold"
           >
             <FontAwesomeIcon icon={faInstagram} />
-            &nbsp; Siga-nos no Instagram
+            Siga-nos no Instagram
           </Link>
           <Link
             href="https://www.facebook.com/queijofazendasantoantonio"
             target="_blank"
-            className="flex justify-center align-center items-center hover:text-light transition-all duration-300"
+            className="flex items-center gap-2 text-sm text-cream/80 transition-colors duration-300 hover:text-gold"
           >
             <FontAwesomeIcon icon={faFacebook} />
-            &nbsp; Curta nossa página no Facebook
-          </Link>
-          <Link
-            href="https://wa.me/+553598647172"
-            target="_blank"
-            className="flex justify-center align-center items-center hover:text-light transition-all duration-300"
-          >
-            <FontAwesomeIcon icon={faWhatsapp} className="text-2xl h-4 mr-2 " />
-            +55 (35) 99864-7172
+            Curta nossa página no Facebook
           </Link>
         </div>
       </div>
-      <div className="pt-5 pb-5 text-primary flex flex-col items-center justify-center text-center bg-setext-secondary w-screen">
-        <p className="text-xs ">
-          Queijo Fazenda Santo Antônio - Todos os Direitos Reservados, {ano}
-        </p>
-        <div className="flex">
-          <p className="text-sm">Desenvolvido por</p>{" "}
-          <a
-            href="https://rixxer.com.br"
-            target="_blank"
-            className="font-bold text-secondary hover:text-light transition ease-in-out duration-300 flex justify-center items-center"
-          >
-            <Image src={rixxer} alt="Rixxer Copr" className="w-12 mx-2" />
-          </a>
+
+      <div className="border-t border-gold/20 py-6">
+        <div className="container-page flex flex-col items-center justify-between gap-3 text-center md:flex-row md:text-left">
+          <p className="text-xs text-cream/60">
+            Queijo Fazenda Santo Antônio &mdash; Todos os Direitos Reservados, {ano}
+          </p>
+          <div className="flex items-center gap-2">
+            <p className="text-xs text-cream/60">Desenvolvido por</p>
+            <a
+              href="https://rixxer.com.br"
+              target="_blank"
+              rel="noreferrer"
+              className="flex items-center font-bold text-gold transition-colors duration-300 hover:text-cream"
+            >
+              <Image src={rixxer} alt="Rixxer Corp" className="mx-2 w-10" />
+            </a>
+          </div>
         </div>
       </div>
-    </div>
+    </footer>
   );
 }

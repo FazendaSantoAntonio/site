@@ -1,24 +1,32 @@
 import Footer from './components/Footer'
 import NavBar from './components/NavBar'
 import '../app/styles/globals.css'
-import { Lobster, Montserrat,} from 'next/font/google'
+import { Fraunces, Inter } from 'next/font/google'
 
-const montserrat = Montserrat({ subsets: ['latin'], variable: '--font-mont' })
-const lobster = Lobster({ subsets: ['latin'], weight: '400', variable: '--font-lob' })
+const display = Fraunces({
+  subsets: ['latin'],
+  weight: ['400', '500', '600'],
+  style: ['normal', 'italic'],
+  variable: '--font-display',
+})
+const sans = Inter({ subsets: ['latin'], variable: '--font-sans' })
 
 export const metadata = {
-  title: 'Queijo Fazenda Santo Antônio',
-  description: 'Queijos Premiados na França',
+  title: 'Queijo Fazenda Santo Antônio | Queijos Artesanais Premiados',
+  description:
+    'Queijos artesanais premiados na França, produzidos na Fazenda Santo Antônio, em Alagoa (MG). Tradição de família, leite cru e sabor que conquistou o mundo.',
 }
 
 export default function RootLayout({ children }) {
   return (
     <html lang="pt-br">
-      <body className={`${montserrat.variable} ${lobster.variable}  min-h-screen bg-light`}>
-     <NavBar/>
-     {children}
-     <Footer/>
-     </body>
+      <body
+        className={`${display.variable} ${sans.variable} min-h-screen bg-light font-sans text-primary`}
+      >
+        <NavBar />
+        {children}
+        <Footer />
+      </body>
     </html>
   )
 }

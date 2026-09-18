@@ -1,7 +1,7 @@
 export default function PoliticaDePrivacidade() {
   return (
-    <div className="flex flex-col py-16 px-5 md:p-16 text-primary bg-light">
-      <h2 className="text-4xl font-bold py-10">Política de Privacidade</h2>
+    <div className="flex flex-col py-16 px-5 md:p-16 text-primary bg-light max-w-3xl mx-auto">
+      <h2 className="font-display text-4xl py-10">Política de Privacidade</h2>
       <p>
         Estamos comprometidos em resguardar sua privacidade e proteger suas
         informações. Esta Política de Privacidade (“Política”) descreve como os
