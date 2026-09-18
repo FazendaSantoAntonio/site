@@ -2,6 +2,7 @@ import Footer from './components/Footer'
 import NavBar from './components/NavBar'
 import '../app/styles/globals.css'
 import { Fraunces, Inter } from 'next/font/google'
+import { AuthProvider } from './context/AuthContext'
 
 const display = Fraunces({
   subsets: ['latin'],
@@ -23,9 +24,11 @@ export default function RootLayout({ children }) {
       <body
         className={`${display.variable} ${sans.variable} min-h-screen bg-light font-sans text-primary`}
       >
-        <NavBar />
-        {children}
-        <Footer />
+        <AuthProvider>
+          <NavBar />
+          {children}
+          <Footer />
+        </AuthProvider>
       </body>
     </html>
   )

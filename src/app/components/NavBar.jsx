@@ -1,9 +1,11 @@
+"use client";
 import Image from "next/image";
 import logo from "../../../public/logo.png";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faShoppingCart,
   faTruck,
+  faUser,
 } from "@fortawesome/free-solid-svg-icons";
 import Link from "next/link";
 import NavMobile from "./NavMobile";
@@ -12,6 +14,7 @@ import {
   faInstagram,
   faWhatsapp,
 } from "@fortawesome/free-brands-svg-icons";
+import { useAuth } from "../context/AuthContext";
 
 const CustomLink = ({ title, link }) => {
   return (
@@ -25,6 +28,8 @@ const CustomLink = ({ title, link }) => {
 };
 
 export default function NavBar() {
+  const { user, profile } = useAuth();
+
   return (
     <div className="sticky top-0 z-30">
       {/* Barra utilitária */}
@@ -83,6 +88,13 @@ export default function NavBar() {
 
         <div className="flex items-center gap-6">
           <CustomLink link="/fale-conosco" title="Atendimento" />
+          <Link
+            href={user ? "/conta" : "/entrar"}
+            className="flex items-center gap-2 text-sm font-medium text-cream/90 transition-colors duration-300 hover:text-gold"
+          >
+            <FontAwesomeIcon icon={faUser} />
+            {user ? (profile?.full_name?.split(" ")[0] ?? "Minha Conta") : "Entrar"}
+          </Link>
           <Link
             href="/carrinho"
             className="flex items-center gap-2 rounded-full border border-gold/50 px-4 py-2 text-sm font-medium text-cream transition-all duration-300 hover:bg-gold hover:text-primary"

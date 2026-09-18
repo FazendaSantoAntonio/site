@@ -10,6 +10,7 @@ import {
   faCheese,
   faBars,
   faXmark,
+  faUser,
 } from "@fortawesome/free-solid-svg-icons";
 import {
   faFacebook,
@@ -20,8 +21,9 @@ import logo from "../../../public/logo.png";
 
 import { useState } from "react";
 import Image from "next/image";
+import { useAuth } from "../context/AuthContext";
 
-const links = [
+const baseLinks = [
   { href: "/", label: "Início", icon: faHome },
   { href: "/#produtos", label: "Produtos", icon: faCheese },
   { href: "/rota", label: "Rota do Queijo", icon: faPeopleGroup },
@@ -34,6 +36,11 @@ const links = [
 
 export default function NavMobile() {
   const [showSidebar, setShowSidebar] = useState(false);
+  const { user } = useAuth();
+  const links = [
+    { href: user ? "/conta" : "/entrar", label: user ? "Minha Conta" : "Entrar", icon: faUser },
+    ...baseLinks,
+  ];
 
   return (
     <div className="flex justify-around bg-primary md:hidden">
