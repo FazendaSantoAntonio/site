@@ -1,9 +1,13 @@
 import Footer from './components/Footer'
 import NavBar from './components/NavBar'
 import '../app/styles/globals.css'
+import '@fortawesome/fontawesome-svg-core/styles.css'
+import { config } from '@fortawesome/fontawesome-svg-core'
 import { Fraunces, Inter } from 'next/font/google'
 import { AuthProvider } from './context/AuthContext'
 import { CartProvider } from './context/CartContext'
+
+config.autoAddCss = false
 
 const display = Fraunces({
   subsets: ['latin'],
