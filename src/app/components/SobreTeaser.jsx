@@ -10,7 +10,7 @@ export default function SobreTeaser() {
         <div className="order-2 flex justify-center md:order-1">
           <div className="w-full max-w-sm overflow-hidden rounded-2xl shadow-card">
             <Image
-              src="/menina.png"
+              src="/who.png"
               alt="Queijos premiados da Fazenda Santo Antônio"
               width={480}
               height={600}
