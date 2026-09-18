@@ -7,14 +7,14 @@ export default function SobreTeaser() {
   return (
     <section className="bg-light py-20">
       <div className="container-page grid grid-cols-1 items-center gap-12 md:grid-cols-2">
-        <div className="relative order-2 flex justify-center md:order-1">
-          <div className="relative flex w-full max-w-sm items-end justify-center overflow-hidden rounded-[2.5rem] bg-gradient-to-b from-gold/25 via-terracotta/10 to-gold/20 px-6 pt-10">
+        <div className="order-2 flex justify-center md:order-1">
+          <div className="w-full max-w-sm overflow-hidden rounded-2xl shadow-card">
             <Image
               src="/menina.png"
-              alt="Criança saboreando o queijo da Fazenda Santo Antônio"
+              alt="Queijos premiados da Fazenda Santo Antônio"
               width={480}
-              height={480}
-              className="w-full drop-shadow-xl"
+              height={600}
+              className="h-full w-full object-cover"
             />
           </div>
         </div>
