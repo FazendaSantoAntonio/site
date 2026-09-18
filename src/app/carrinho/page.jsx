@@ -7,6 +7,7 @@ import { useAuth } from "../context/AuthContext";
 import { useCart } from "../context/CartContext";
 import { supabase } from "../../../config/supabase";
 import AddressForm from "../components/AddressForm";
+import PagamentoStep from "../components/PagamentoStep";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faTrashAlt, faMinus, faPlus, faTruckFast, faTag, faCartShopping, faPlus as faPlusIcon,
@@ -52,7 +53,7 @@ function useFrete(uf, subtotal) {
 
 export default function Carrinho() {
   const router = useRouter();
-  const { user, loading: authLoading } = useAuth();
+  const { user, profile, loading: authLoading } = useAuth();
   const { items, updateQuantity, removeItem, subtotal, clearCart } = useCart();
 
   const [cep, setCep] = useState("");
@@ -180,23 +181,10 @@ export default function Carrinho() {
   };
 
   if (pedidoCriado) {
-    const mensagemWhats = encodeURIComponent(
-      `Olá! Acabei de fazer o pedido #${pedidoCriado.id.slice(0, 8)} no site (total ${formatBRL(pedidoCriado.total)}). Como posso combinar o pagamento?`
-    );
     return (
-      <div className="flex min-h-[60vh] flex-col items-center justify-center bg-light px-5 py-16 text-center">
-        <FontAwesomeIcon icon={faCartShopping} className="text-4xl text-terracotta" />
-        <h1 className="mt-4 font-display text-3xl text-primary">Pedido registrado!</h1>
-        <p className="mt-2 max-w-md text-primary/70">
-          Seu pedido <strong>#{pedidoCriado.id.slice(0, 8)}</strong> foi recebido.
-          Como ainda estamos ativando o pagamento online, fale com a gente pelo
-          WhatsApp para combinar o pagamento e a entrega.
-        </p>
-        <div className="mt-6 flex gap-3">
-          <Link href={`https://wa.me/5535998647172?text=${mensagemWhats}`} target="_blank" className="btn-primary">
-            Falar no WhatsApp
-          </Link>
-          <Link href="/conta" className="btn-outline">Ver meus pedidos</Link>
+      <div className="flex min-h-[60vh] items-center justify-center bg-light px-5 py-16">
+        <div className="card-surface w-full max-w-lg p-8">
+          <PagamentoStep order={pedidoCriado} profileCpf={profile?.cpf} />
         </div>
       </div>
     );
