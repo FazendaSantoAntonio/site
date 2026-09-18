@@ -12,6 +12,10 @@ export default function ProductForm({ initialData, onSubmit, submitLabel }) {
     valor: initialData?.valor ?? "",
     imagens: initialData?.imagens ?? [],
     ativo: initialData?.ativo ?? true,
+    peso_kg: initialData?.peso_kg ?? 0.5,
+    altura_cm: initialData?.altura_cm ?? 10,
+    largura_cm: initialData?.largura_cm ?? 15,
+    comprimento_cm: initialData?.comprimento_cm ?? 15,
   });
   const [uploading, setUploading] = useState(false);
   const [saving, setSaving] = useState(false);
@@ -56,7 +60,14 @@ export default function ProductForm({ initialData, onSubmit, submitLabel }) {
     }
 
     setSaving(true);
-    await onSubmit({ ...form, valor: Number(form.valor) });
+    await onSubmit({
+      ...form,
+      valor: Number(form.valor),
+      peso_kg: Number(form.peso_kg),
+      altura_cm: Number(form.altura_cm),
+      largura_cm: Number(form.largura_cm),
+      comprimento_cm: Number(form.comprimento_cm),
+    });
     setSaving(false);
   };
 
@@ -96,6 +107,47 @@ export default function ProductForm({ initialData, onSubmit, submitLabel }) {
           onChange={handleChange}
           className="mt-1 w-40 rounded-lg border border-cardBorder bg-white px-4 py-2.5 outline-none focus:border-gold"
         />
+      </div>
+
+      <div>
+        <label className="text-sm font-medium text-primary">Peso e dimensões (para o frete)</label>
+        <p className="mb-2 text-xs text-primary/50">
+          Da embalagem já pronta para envio. Afeta direto o valor do frete calculado.
+        </p>
+        <div className="grid grid-cols-4 gap-3">
+          <div>
+            <label className="text-xs text-primary/60">Peso (kg)</label>
+            <input
+              required type="number" step="0.01" min="0.01"
+              name="peso_kg" value={form.peso_kg} onChange={handleChange}
+              className="mt-1 w-full rounded-lg border border-cardBorder bg-white px-3 py-2 outline-none focus:border-gold"
+            />
+          </div>
+          <div>
+            <label className="text-xs text-primary/60">Altura (cm)</label>
+            <input
+              required type="number" step="1" min="2"
+              name="altura_cm" value={form.altura_cm} onChange={handleChange}
+              className="mt-1 w-full rounded-lg border border-cardBorder bg-white px-3 py-2 outline-none focus:border-gold"
+            />
+          </div>
+          <div>
+            <label className="text-xs text-primary/60">Largura (cm)</label>
+            <input
+              required type="number" step="1" min="2"
+              name="largura_cm" value={form.largura_cm} onChange={handleChange}
+              className="mt-1 w-full rounded-lg border border-cardBorder bg-white px-3 py-2 outline-none focus:border-gold"
+            />
+          </div>
+          <div>
+            <label className="text-xs text-primary/60">Comprimento (cm)</label>
+            <input
+              required type="number" step="1" min="2"
+              name="comprimento_cm" value={form.comprimento_cm} onChange={handleChange}
+              className="mt-1 w-full rounded-lg border border-cardBorder bg-white px-3 py-2 outline-none focus:border-gold"
+            />
+          </div>
+        </div>
       </div>
 
       <div>

@@ -15,40 +15,52 @@ import {
 
 const formatBRL = (v) => Number(v).toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
 
-function useFrete(uf, subtotal) {
-  const [frete, setFrete] = useState(null);
+function useFreteReal(cep, itens) {
+  const [opcoes, setOpcoes] = useState([]);
+  const [selecionada, setSelecionada] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [aviso, setAviso] = useState("");
 
   useEffect(() => {
-    if (!uf) {
-      setFrete(null);
+    const cepLimpo = (cep || "").replace(/\D/g, "");
+    if (cepLimpo.length !== 8 || itens.length === 0) {
+      setOpcoes([]);
+      setSelecionada(null);
       return;
     }
-    async function loadFrete() {
+
+    let cancelado = false;
+    async function calcular() {
       setLoading(true);
-      const { data } = await supabase
-        .from("freight_rules")
-        .select("*")
-        .eq("ativo", true)
-        .order("ordem", { ascending: true });
-
-      const rules = data ?? [];
-      const match =
-        rules.find((r) => r.estados?.includes(uf)) ??
-        rules.find((r) => !r.estados || r.estados.length === 0);
-
-      if (match) {
-        const gratis = subtotal >= 1000;
-        setFrete({ preco: gratis ? 0 : Number(match.preco), prazo: match.prazo_dias, regiao: match.regiao, gratisPorValor: gratis });
-      } else {
-        setFrete(null);
+      setAviso("");
+      try {
+        const res = await fetch("/api/frete/calcular", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            cep: cepLimpo,
+            itens: itens.map((i) => ({ id: i.id, quantidade: i.quantidade })),
+          }),
+        });
+        const data = await res.json();
+        if (cancelado) return;
+        setOpcoes(data.opcoes ?? []);
+        setSelecionada(data.opcoes?.[0] ?? null);
+        if (data.aviso) setAviso(data.aviso);
+      } catch {
+        if (!cancelado) {
+          setOpcoes([]);
+          setSelecionada(null);
+          setAviso("Não foi possível calcular o frete agora.");
+        }
       }
-      setLoading(false);
+      if (!cancelado) setLoading(false);
     }
-    loadFrete();
-  }, [uf, subtotal]);
+    calcular();
+    return () => { cancelado = true; };
+  }, [cep, JSON.stringify(itens.map((i) => ({ id: i.id, quantidade: i.quantidade })))]);
 
-  return { frete, loadingFrete: loading };
+  return { opcoes, selecionada, setSelecionada, loadingFrete: loading, aviso };
 }
 
 export default function Carrinho() {
@@ -57,7 +69,6 @@ export default function Carrinho() {
   const { items, updateQuantity, removeItem, subtotal, clearCart } = useCart();
 
   const [cep, setCep] = useState("");
-  const [ufEstimado, setUfEstimado] = useState(null);
   const [buscandoCep, setBuscandoCep] = useState(false);
 
   const [addresses, setAddresses] = useState([]);
@@ -72,8 +83,8 @@ export default function Carrinho() {
   const [pedidoCriado, setPedidoCriado] = useState(null);
   const [erro, setErro] = useState("");
 
-  const uf = selectedAddress?.state || ufEstimado;
-  const { frete, loadingFrete } = useFrete(uf, subtotal);
+  const cepAtivo = selectedAddress?.cep || cep;
+  const { opcoes, selecionada, setSelecionada, loadingFrete, aviso } = useFreteReal(cepAtivo, items);
 
   useEffect(() => {
     async function loadAddresses() {
@@ -86,17 +97,7 @@ export default function Carrinho() {
   }, [user]);
 
   const handleCepBlur = async () => {
-    const cepLimpo = cep.replace(/\D/g, "");
-    if (cepLimpo.length !== 8) return;
-    setBuscandoCep(true);
-    try {
-      const res = await fetch(`https://viacep.com.br/ws/${cepLimpo}/json/`);
-      const data = await res.json();
-      if (!data.erro) setUfEstimado(data.uf);
-    } catch {
-      // busca de CEP indisponível — usuário pode selecionar endereço salvo
-    }
-    setBuscandoCep(false);
+    // o próprio hook de frete já dispara com o CEP digitado
   };
 
   const handleApplyCoupon = async () => {
@@ -120,7 +121,8 @@ export default function Carrinho() {
       : Number(couponResult.discount_value)
     : 0;
 
-  const freteValor = frete?.preco ?? 0;
+  const freteGratisPorValor = subtotal >= 1000;
+  const freteValor = freteGratisPorValor ? 0 : (selecionada?.preco ?? 0);
   const total = Math.max(0, subtotal - desconto) + freteValor;
 
   const handleFinalizar = async () => {
@@ -134,6 +136,10 @@ export default function Carrinho() {
       setErro("Selecione ou cadastre um endereço de entrega.");
       return;
     }
+    if (!selecionada && !freteGratisPorValor) {
+      setErro("Não foi possível calcular o frete para esse endereço.");
+      return;
+    }
 
     setFinalizando(true);
 
@@ -145,6 +151,7 @@ export default function Carrinho() {
         status: "pendente",
         subtotal,
         frete: freteValor,
+        frete_servico: selecionada?.servico ?? null,
         desconto,
         total,
         coupon_code: couponResult?.valid ? coupon.trim().toUpperCase() : null,
@@ -287,7 +294,28 @@ export default function Carrinho() {
                 />
               </div>
             )}
-            {buscandoCep && <p className="mt-2 text-xs text-primary/50">Buscando CEP...</p>}
+
+            {loadingFrete && <p className="mt-2 text-xs text-primary/50">Calculando frete...</p>}
+
+            {!loadingFrete && opcoes.length > 0 && !freteGratisPorValor && (
+              <div className="mt-3 flex flex-col gap-2">
+                {opcoes.map((op) => (
+                  <label key={op.servico} className="card-surface flex items-center justify-between gap-3 p-3 text-sm">
+                    <span className="flex items-center gap-3">
+                      <input
+                        type="radio"
+                        checked={selecionada?.servico === op.servico}
+                        onChange={() => setSelecionada(op)}
+                      />
+                      {op.servico} &middot; {op.prazoDias} dia{op.prazoDias > 1 ? "s" : ""}
+                    </span>
+                    <span className="font-semibold text-terracotta">{formatBRL(op.preco)}</span>
+                  </label>
+                ))}
+              </div>
+            )}
+
+            {aviso && <p className="mt-2 text-xs text-primary/50">{aviso}</p>}
           </div>
         </div>
 
@@ -300,9 +328,15 @@ export default function Carrinho() {
           </div>
 
           <div className="flex justify-between text-sm text-primary/70">
-            <span>Frete {frete?.regiao ? `(${frete.regiao})` : ""}</span>
+            <span>Frete {selecionada?.servico ? `(${selecionada.servico})` : ""}</span>
             <span>
-              {loadingFrete ? "Calculando..." : frete ? (freteValor === 0 ? "Grátis" : formatBRL(freteValor)) : "Informe o CEP"}
+              {freteGratisPorValor
+                ? "Grátis"
+                : loadingFrete
+                ? "Calculando..."
+                : selecionada
+                ? formatBRL(freteValor)
+                : "Informe o CEP"}
             </span>
           </div>
 
