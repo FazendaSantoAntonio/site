@@ -63,20 +63,22 @@ export default function CarrosselDetalhes() {
                 sizes="100vw"
                 className="object-cover"
               />
-              <div className="absolute inset-0 bg-gradient-to-t from-primary/90 via-primary/30 to-primary/10" />
+              <div className="absolute inset-0 bg-gradient-to-t from-primary/70 via-primary/10 to-transparent" />
               <div className="container-page absolute inset-0 flex flex-col items-start justify-end pb-20 md:pb-28">
-                <span className="eyebrow mb-3 text-gold">{slide.eyebrow}</span>
-                <h1 className="max-w-2xl font-display text-3xl italic text-cream md:text-5xl">
-                  {slide.title}
-                </h1>
-                <p
-                  className="mt-4 max-w-lg font-sans text-sm text-cream/85 md:text-base"
-                  dangerouslySetInnerHTML={{ __html: slide.text }}
-                />
-                <Link href={slide.cta.href} className="btn-gold mt-8">
-                  {slide.cta.label}
-                  <FontAwesomeIcon icon={faArrowRight} />
-                </Link>
+                <div className="max-w-2xl rounded-2xl bg-primary/55 p-6 backdrop-blur-sm md:p-8">
+                  <span className="eyebrow mb-3 text-gold">{slide.eyebrow}</span>
+                  <h1 className="font-display text-3xl italic text-cream md:text-5xl">
+                    {slide.title}
+                  </h1>
+                  <p
+                    className="mt-4 max-w-lg font-sans text-sm text-cream/90 md:text-base"
+                    dangerouslySetInnerHTML={{ __html: slide.text }}
+                  />
+                  <Link href={slide.cta.href} className="btn-gold mt-6">
+                    {slide.cta.label}
+                    <FontAwesomeIcon icon={faArrowRight} />
+                  </Link>
+                </div>
               </div>
             </div>
           </SwiperSlide>
