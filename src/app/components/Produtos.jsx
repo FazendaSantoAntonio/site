@@ -2,8 +2,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import React, { useEffect, useState } from "react";
-import { db } from "../../../config/firebase";
-import { collection, getDocs } from "firebase/firestore";
+import { supabase } from "../../../config/supabase";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faAward } from "@fortawesome/free-solid-svg-icons";
 import { faWhatsapp } from "@fortawesome/free-brands-svg-icons";
@@ -11,7 +10,7 @@ import { faWhatsapp } from "@fortawesome/free-brands-svg-icons";
 const isPremiado = (text = "") => /pr[eê]mio|premiad/i.test(text);
 
 const Card = ({ id, foto, titulo, shortdescription, preco }) => {
-  const numberFormatted = preco.toLocaleString("pt-BR", {
+  const numberFormatted = Number(preco).toLocaleString("pt-BR", {
     style: "currency",
     currency: "BRL",
   });
@@ -102,8 +101,8 @@ function DatabaseRead({ currentPage, itemsPerPage, produto, loading }) {
         if (Array.isArray(item.imagens) && item.imagens.length > 0) {
           return (
             <Card
-              key={item._docId}
-              id={item._docId}
+              key={item.id}
+              id={item.id}
               titulo={item.produto}
               shortdescription={item.shortdescription}
               preco={item.valor}
@@ -149,16 +148,18 @@ export default function Produtos() {
 
   useEffect(() => {
     async function fetchData() {
-      try {
-        const dataCollection = collection(db, "produtos");
-        const dataSnapshot = await getDocs(dataCollection);
-        const dataList = dataSnapshot.docs.map((doc) => ({ ...doc.data(), _docId: doc.id }));
-        setProduto(dataList);
-      } catch (error) {
+      const { data, error } = await supabase
+        .from("produtos")
+        .select("*")
+        .eq("ativo", true)
+        .order("created_at", { ascending: true });
+
+      if (error) {
         console.error("Erro ao carregar produtos:", error);
-      } finally {
-        setLoading(false);
+      } else {
+        setProduto(data);
       }
+      setLoading(false);
     }
     fetchData();
   }, []);

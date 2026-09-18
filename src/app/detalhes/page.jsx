@@ -3,8 +3,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
-import { db } from "../../../config/firebase";
-import { collection, getDocs } from "firebase/firestore";
+import { supabase } from "../../../config/supabase";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faAward, faMinus, faPlus } from "@fortawesome/free-solid-svg-icons";
 import { faWhatsapp } from "@fortawesome/free-brands-svg-icons";
@@ -21,18 +20,22 @@ export default function Detalhes() {
   const [count, setCount] = useState(1);
 
   useEffect(() => {
+    if (!id) {
+      setLoading(false);
+      return;
+    }
     async function fetchProduto() {
-      try {
-        const dataCollection = collection(db, "produtos");
-        const dataSnapshot = await getDocs(dataCollection);
-        const dataList = dataSnapshot.docs.map((doc) => ({ ...doc.data(), _docId: doc.id }));
-        const encontrado = dataList.find((item) => item._docId === id);
-        setProduto(encontrado || null);
-      } catch (error) {
+      const { data, error } = await supabase
+        .from("produtos")
+        .select("*")
+        .eq("id", id)
+        .maybeSingle();
+
+      if (error) {
         console.error("Erro ao carregar produto:", error);
-      } finally {
-        setLoading(false);
       }
+      setProduto(data ?? null);
+      setLoading(false);
     }
     fetchProduto();
   }, [id]);
@@ -54,7 +57,7 @@ export default function Detalhes() {
     );
   }
 
-  const numberFormatted = produto.valor?.toLocaleString("pt-BR", {
+  const numberFormatted = Number(produto.valor).toLocaleString("pt-BR", {
     style: "currency",
     currency: "BRL",
   });
