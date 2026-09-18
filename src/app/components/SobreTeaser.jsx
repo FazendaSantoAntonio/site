@@ -8,14 +8,15 @@ export default function SobreTeaser() {
     <section className="bg-light py-20">
       <div className="container-page grid grid-cols-1 items-center gap-12 md:grid-cols-2">
         <div className="relative order-2 flex justify-center md:order-1">
-          <div className="absolute -inset-6 -z-10 hidden rounded-full bg-gold/15 md:block" />
-          <Image
-            src="/menina.png"
-            alt="Criança saboreando o queijo da Fazenda Santo Antônio"
-            width={480}
-            height={480}
-            className="w-full max-w-sm"
-          />
+          <div className="relative flex w-full max-w-sm items-end justify-center overflow-hidden rounded-[2.5rem] bg-gradient-to-b from-gold/25 via-terracotta/10 to-gold/20 px-6 pt-10">
+            <Image
+              src="/menina.png"
+              alt="Criança saboreando o queijo da Fazenda Santo Antônio"
+              width={480}
+              height={480}
+              className="w-full drop-shadow-xl"
+            />
+          </div>
         </div>
         <div className="order-1 md:order-2">
           <span className="eyebrow">Nossa história</span>
