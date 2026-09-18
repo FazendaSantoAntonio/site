@@ -1,10 +1,53 @@
 "use client";
 import { useEffect, useState } from "react";
+import { useSearchParams } from "next/navigation";
 import { supabase } from "../../../../config/supabase";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faPlus, faTrash, faFloppyDisk } from "@fortawesome/free-solid-svg-icons";
+import { faPlus, faTrash, faFloppyDisk, faLink, faCheck, faTriangleExclamation } from "@fortawesome/free-solid-svg-icons";
 
 const emptyRule = { regiao: "", estados: "", preco: "", prazo_dias: "", ordem: 0, ativo: true };
+
+function ConexaoMelhorEnvio() {
+  const searchParams = useSearchParams();
+  const [status, setStatus] = useState(null);
+
+  useEffect(() => {
+    fetch("/api/melhorenvio/status")
+      .then((r) => r.json())
+      .then(setStatus)
+      .catch(() => setStatus({ conectado: false }));
+  }, []);
+
+  const resultadoRedirect = searchParams.get("melhorenvio");
+
+  return (
+    <div className="card-surface mb-8 flex flex-wrap items-center justify-between gap-3 p-4">
+      <div>
+        <p className="font-display text-lg text-primary">Melhor Envio</p>
+        {status === null ? (
+          <p className="text-sm text-primary/60">Verificando conexão...</p>
+        ) : status.conectado ? (
+          <p className="flex items-center gap-2 text-sm text-olive">
+            <FontAwesomeIcon icon={faCheck} />
+            Conectado {status.conectadoEm ? `desde ${new Date(status.conectadoEm).toLocaleDateString("pt-BR")}` : ""}
+          </p>
+        ) : (
+          <p className="text-sm text-primary/60">Ainda não conectado — o cálculo automático de frete não está ativo.</p>
+        )}
+        {resultadoRedirect === "erro" && (
+          <p className="mt-1 flex items-center gap-2 text-sm text-terracotta">
+            <FontAwesomeIcon icon={faTriangleExclamation} />
+            Não foi possível conectar ({searchParams.get("motivo")}).
+          </p>
+        )}
+      </div>
+      <a href="/api/melhorenvio/conectar" className="btn-outline text-sm">
+        <FontAwesomeIcon icon={faLink} />
+        {status?.conectado ? "Reconectar" : "Conectar Melhor Envio"}
+      </a>
+    </div>
+  );
+}
 
 export default function AdminFrete() {
   const [rules, setRules] = useState([]);
@@ -65,6 +108,10 @@ export default function AdminFrete() {
         deixe os estados em branco na última regra para servir de padrão
         (&quot;demais estados&quot;).
       </p>
+
+      <div className="mt-6">
+        <ConexaoMelhorEnvio />
+      </div>
 
       {loading ? (
         <p className="mt-8 text-primary/60">Carregando...</p>
