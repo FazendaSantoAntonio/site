@@ -2,10 +2,11 @@
 import { useState } from "react";
 import Link from "next/link";
 import { supabase } from "../../../config/supabase";
+import CardPaymentForm from "./CardPaymentForm";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faQrcode, faBarcode, faCreditCard, faCopy, faCheck,
-  faArrowRotateRight, faCircleCheck, faTriangleExclamation,
+  faArrowRotateRight, faCircleCheck, faTriangleExclamation, faArrowLeft,
 } from "@fortawesome/free-solid-svg-icons";
 
 const formatBRL = (v) => Number(v).toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
@@ -29,20 +30,24 @@ function CopiarBotao({ texto }) {
 
 export default function PagamentoStep({ order, profileCpf }) {
   const [metodo, setMetodo] = useState(null);
+  const [mostrarFormCartao, setMostrarFormCartao] = useState(false);
   const [cpf, setCpf] = useState("");
   const [processando, setProcessando] = useState(false);
   const [resultado, setResultado] = useState(null);
   const [erro, setErro] = useState("");
   const [statusAtual, setStatusAtual] = useState(order.status);
+  const [statusPagamento, setStatusPagamento] = useState(null);
   const [verificando, setVerificando] = useState(false);
 
   const mensagemWhats = encodeURIComponent(
     `Olá! Fiz o pedido #${order.id.slice(0, 8)} no site (total ${formatBRL(order.total)}) e preciso de ajuda com o pagamento.`
   );
 
-  const escolherMetodo = async (novoMetodo) => {
+  const cpfValido = () => (profileCpf || cpf).replace(/\D/g, "").length === 11;
+
+  const criarPagamento = async (novoMetodo, cardToken) => {
     setErro("");
-    if (!profileCpf && cpf.replace(/\D/g, "").length !== 11) {
+    if (!cpfValido()) {
       setErro("Informe um CPF válido para continuar.");
       return;
     }
@@ -57,15 +62,18 @@ export default function PagamentoStep({ order, profileCpf }) {
       const res = await fetch("/api/pagamentos/criar", {
         method: "POST",
         headers: { "Content-Type": "application/json", Authorization: `Bearer ${accessToken}` },
-        body: JSON.stringify({ orderId: order.id, paymentMethod: novoMetodo, cpf }),
+        body: JSON.stringify({ orderId: order.id, paymentMethod: novoMetodo, cardToken, cpf }),
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || "Erro ao gerar pagamento.");
+
       setResultado(data.pagamento);
-      setStatusAtual(data.status === "pago" ? "pago" : "pendente");
+      setStatusPagamento(data.status);
+      if (data.status === "pago") setStatusAtual("pago");
     } catch (e) {
       setErro(e.message);
       setMetodo(null);
+      setMostrarFormCartao(false);
     } finally {
       setProcessando(false);
     }
@@ -78,6 +86,14 @@ export default function PagamentoStep({ order, profileCpf }) {
     setVerificando(false);
   };
 
+  const reiniciar = () => {
+    setMetodo(null);
+    setMostrarFormCartao(false);
+    setResultado(null);
+    setStatusPagamento(null);
+    setErro("");
+  };
+
   if (statusAtual === "pago") {
     return (
       <div className="flex flex-col items-center gap-3 text-center">
@@ -87,6 +103,22 @@ export default function PagamentoStep({ order, profileCpf }) {
           Recebemos seu pagamento. Vamos preparar seu pedido com carinho.
         </p>
         <Link href="/conta" className="btn-primary">Ver meus pedidos</Link>
+      </div>
+    );
+  }
+
+  if (metodo === "credit_card" && statusPagamento === "falhou") {
+    return (
+      <div className="flex flex-col items-center gap-4 text-center">
+        <FontAwesomeIcon icon={faTriangleExclamation} className="text-4xl text-terracotta" />
+        <h2 className="font-display text-2xl text-primary">Pagamento não aprovado</h2>
+        <p className="max-w-sm text-primary/70">
+          O cartão foi recusado. Você pode tentar outro cartão ou escolher Pix/Boleto.
+        </p>
+        <button onClick={reiniciar} className="btn-primary">
+          <FontAwesomeIcon icon={faArrowLeft} />
+          Tentar de novo
+        </button>
       </div>
     );
   }
@@ -132,6 +164,34 @@ export default function PagamentoStep({ order, profileCpf }) {
     );
   }
 
+  if (mostrarFormCartao) {
+    return (
+      <div className="flex flex-col items-center gap-4 text-center">
+        <h2 className="font-display text-2xl text-primary">Pagar com cartão</h2>
+        {!profileCpf && (
+          <input
+            value={cpf}
+            onChange={(e) => setCpf(e.target.value)}
+            placeholder="Seu CPF (só números)"
+            maxLength={14}
+            className="w-full max-w-xs rounded-lg border border-cardBorder bg-white px-4 py-2.5 text-center outline-none focus:border-gold"
+          />
+        )}
+        <CardPaymentForm
+          processando={processando}
+          onToken={(token) => criarPagamento("credit_card", token)}
+        />
+        {erro && (
+          <p className="flex items-center gap-2 text-sm text-terracotta">
+            <FontAwesomeIcon icon={faTriangleExclamation} />
+            {erro}
+          </p>
+        )}
+        <button onClick={reiniciar} className="text-xs font-medium text-primary/50">Voltar</button>
+      </div>
+    );
+  }
+
   return (
     <div className="flex flex-col items-center gap-5 text-center">
       <h2 className="font-display text-2xl text-primary">Pedido #{order.id.slice(0, 8)} registrado!</h2>
@@ -148,17 +208,27 @@ export default function PagamentoStep({ order, profileCpf }) {
       )}
 
       <div className="flex flex-wrap justify-center gap-3">
-        <button onClick={() => escolherMetodo("pix")} disabled={processando} className="btn-primary disabled:opacity-60">
+        <button onClick={() => criarPagamento("pix")} disabled={processando} className="btn-primary disabled:opacity-60">
           <FontAwesomeIcon icon={faQrcode} />
           {processando && metodo === "pix" ? "Gerando..." : "Pagar com Pix"}
         </button>
-        <button onClick={() => escolherMetodo("boleto")} disabled={processando} className="btn-outline disabled:opacity-60">
+        <button onClick={() => criarPagamento("boleto")} disabled={processando} className="btn-outline disabled:opacity-60">
           <FontAwesomeIcon icon={faBarcode} />
           {processando && metodo === "boleto" ? "Gerando..." : "Boleto"}
         </button>
-        <button disabled className="btn-outline opacity-50" title="Em breve">
+        <button
+          onClick={() => {
+            if (!cpfValido()) {
+              setErro("Informe um CPF válido para continuar.");
+              return;
+            }
+            setErro("");
+            setMostrarFormCartao(true);
+          }}
+          className="btn-outline"
+        >
           <FontAwesomeIcon icon={faCreditCard} />
-          Cartão (em breve)
+          Cartão de crédito
         </button>
       </div>
 
