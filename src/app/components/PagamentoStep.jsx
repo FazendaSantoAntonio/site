@@ -11,8 +11,8 @@ import {
 
 const formatBRL = (v) => Number(v).toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
 
-const PIX_CHAVE = "hebertdev82@gmail.com";
-const PIX_NOME = "Hebert Dias";
+const PIX_CHAVE = "62989928000106";
+const PIX_NOME = "Queijo Fazenda Santo Antônio";
 const PIX_CIDADE = "Alagoa";
 
 function CopiarBotao({ texto }) {
