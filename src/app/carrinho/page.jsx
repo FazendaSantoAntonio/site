@@ -65,7 +65,7 @@ function useFreteReal(cep, itens) {
 
 export default function Carrinho() {
   const router = useRouter();
-  const { user, profile, loading: authLoading } = useAuth();
+  const { user, loading: authLoading } = useAuth();
   const { items, updateQuantity, removeItem, subtotal, clearCart } = useCart();
 
   const [cep, setCep] = useState("");
@@ -191,7 +191,7 @@ export default function Carrinho() {
     return (
       <div className="flex min-h-[60vh] items-center justify-center bg-light px-5 py-16">
         <div className="card-surface w-full max-w-lg p-8">
-          <PagamentoStep order={pedidoCriado} profileCpf={profile?.cpf} />
+          <PagamentoStep order={pedidoCriado} />
         </div>
       </div>
     );
