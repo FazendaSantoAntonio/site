@@ -10,8 +10,10 @@ import AddressForm from "../components/AddressForm";
 import PagamentoStep from "../components/PagamentoStep";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
-  faTrashAlt, faMinus, faPlus, faTruckFast, faTag, faCartShopping, faPlus as faPlusIcon,
+  faTrashAlt, faMinus, faPlus, faTruckFast, faTag, faCartShopping, faPlus as faPlusIcon, faStore,
 } from "@fortawesome/free-solid-svg-icons";
+
+const RETIRADA_SERVICO = "Retirada no local";
 
 const formatBRL = (v) => Number(v).toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
 
@@ -70,6 +72,7 @@ export default function Carrinho() {
 
   const [cep, setCep] = useState("");
   const [buscandoCep, setBuscandoCep] = useState(false);
+  const [tipoEntrega, setTipoEntrega] = useState("entrega");
 
   const [addresses, setAddresses] = useState([]);
   const [selectedAddress, setSelectedAddress] = useState(null);
@@ -83,7 +86,7 @@ export default function Carrinho() {
   const [pedidoCriado, setPedidoCriado] = useState(null);
   const [erro, setErro] = useState("");
 
-  const cepAtivo = selectedAddress?.cep || cep;
+  const cepAtivo = tipoEntrega === "retirada" ? "" : selectedAddress?.cep || cep;
   const { opcoes, selecionada, setSelecionada, loadingFrete, aviso } = useFreteReal(cepAtivo, items);
 
   useEffect(() => {
@@ -122,7 +125,7 @@ export default function Carrinho() {
     : 0;
 
   const freteGratisPorValor = subtotal >= 1000;
-  const freteValor = freteGratisPorValor ? 0 : (selecionada?.preco ?? 0);
+  const freteValor = tipoEntrega === "retirada" ? 0 : freteGratisPorValor ? 0 : (selecionada?.preco ?? 0);
   const total = Math.max(0, subtotal - desconto) + freteValor;
 
   const handleFinalizar = async () => {
@@ -132,13 +135,15 @@ export default function Carrinho() {
       router.push("/entrar");
       return;
     }
-    if (!selectedAddress) {
-      setErro("Selecione ou cadastre um endereço de entrega.");
-      return;
-    }
-    if (!selecionada && !freteGratisPorValor) {
-      setErro("Não foi possível calcular o frete para esse endereço.");
-      return;
+    if (tipoEntrega === "entrega") {
+      if (!selectedAddress) {
+        setErro("Selecione ou cadastre um endereço de entrega.");
+        return;
+      }
+      if (!selecionada && !freteGratisPorValor) {
+        setErro("Não foi possível calcular o frete para esse endereço.");
+        return;
+      }
     }
 
     setFinalizando(true);
@@ -147,11 +152,11 @@ export default function Carrinho() {
       .from("orders")
       .insert({
         profile_id: user.id,
-        address_id: selectedAddress.id,
+        address_id: tipoEntrega === "retirada" ? null : selectedAddress.id,
         status: "pendente",
         subtotal,
         frete: freteValor,
-        frete_servico: selecionada?.servico ?? null,
+        frete_servico: tipoEntrega === "retirada" ? RETIRADA_SERVICO : selecionada?.servico ?? null,
         desconto,
         total,
         coupon_code: couponResult?.valid ? coupon.trim().toUpperCase() : null,
@@ -245,10 +250,42 @@ export default function Carrinho() {
           <div className="mt-8">
             <h2 className="flex items-center gap-2 font-display text-lg text-primary">
               <FontAwesomeIcon icon={faTruckFast} className="text-terracotta" />
-              Endereço de entrega
+              Entrega
             </h2>
 
-            {!user ? (
+            <div className="mt-3 flex gap-2">
+              <button
+                type="button"
+                onClick={() => setTipoEntrega("entrega")}
+                className={`flex-1 rounded-lg border px-4 py-2.5 text-sm font-medium transition ${
+                  tipoEntrega === "entrega"
+                    ? "border-gold bg-gold/10 text-primary"
+                    : "border-cardBorder text-primary/60"
+                }`}
+              >
+                <FontAwesomeIcon icon={faTruckFast} className="mr-2" />
+                Receber em casa
+              </button>
+              <button
+                type="button"
+                onClick={() => setTipoEntrega("retirada")}
+                className={`flex-1 rounded-lg border px-4 py-2.5 text-sm font-medium transition ${
+                  tipoEntrega === "retirada"
+                    ? "border-gold bg-gold/10 text-primary"
+                    : "border-cardBorder text-primary/60"
+                }`}
+              >
+                <FontAwesomeIcon icon={faStore} className="mr-2" />
+                Retirar na loja
+              </button>
+            </div>
+
+            {tipoEntrega === "retirada" ? (
+              <p className="mt-3 text-sm text-primary/60">
+                Sem custo de frete. Retire seu pedido diretamente na Fazenda Santo Antônio,
+                em Alagoa/MG. Combinamos o horário pelo WhatsApp depois que o pagamento for confirmado.
+              </p>
+            ) : !user ? (
               <p className="mt-3 text-sm text-primary/60">
                 Digite seu CEP para estimar o frete. Para finalizar a compra, você
                 vai precisar <Link href="/entrar" className="font-semibold text-terracotta">entrar ou criar uma conta</Link>.
@@ -283,7 +320,7 @@ export default function Carrinho() {
               </div>
             ) : null}
 
-            {!user && (
+            {tipoEntrega === "entrega" && !user && (
               <div className="mt-3 flex max-w-xs gap-2">
                 <input
                   value={cep}
@@ -295,9 +332,9 @@ export default function Carrinho() {
               </div>
             )}
 
-            {loadingFrete && <p className="mt-2 text-xs text-primary/50">Calculando frete...</p>}
+            {tipoEntrega === "entrega" && loadingFrete && <p className="mt-2 text-xs text-primary/50">Calculando frete...</p>}
 
-            {!loadingFrete && opcoes.length > 0 && !freteGratisPorValor && (
+            {tipoEntrega === "entrega" && !loadingFrete && opcoes.length > 0 && !freteGratisPorValor && (
               <div className="mt-3 flex flex-col gap-2">
                 {opcoes.map((op) => (
                   <label key={op.servico} className="card-surface flex items-center justify-between gap-3 p-3 text-sm">
@@ -315,7 +352,7 @@ export default function Carrinho() {
               </div>
             )}
 
-            {aviso && <p className="mt-2 text-xs text-primary/50">{aviso}</p>}
+            {tipoEntrega === "entrega" && aviso && <p className="mt-2 text-xs text-primary/50">{aviso}</p>}
           </div>
         </div>
 
@@ -328,9 +365,11 @@ export default function Carrinho() {
           </div>
 
           <div className="flex justify-between text-sm text-primary/70">
-            <span>Frete {selecionada?.servico ? `(${selecionada.servico})` : ""}</span>
+            <span>Frete {tipoEntrega === "entrega" && selecionada?.servico ? `(${selecionada.servico})` : ""}</span>
             <span>
-              {freteGratisPorValor
+              {tipoEntrega === "retirada"
+                ? "Retirada no local"
+                : freteGratisPorValor
                 ? "Grátis"
                 : loadingFrete
                 ? "Calculando..."

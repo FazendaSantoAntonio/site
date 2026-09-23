@@ -59,11 +59,15 @@ export default function AdminPedidos() {
                 </select>
               </div>
 
-              {pedido.addresses && (
+              {pedido.addresses ? (
                 <p className="mt-3 text-sm text-primary/60">
                   Entregar em: {pedido.addresses.street}, {pedido.addresses.number} &mdash;{" "}
                   {pedido.addresses.neighborhood}, {pedido.addresses.city}/{pedido.addresses.state} &mdash;{" "}
                   CEP {pedido.addresses.cep}
+                </p>
+              ) : (
+                <p className="mt-3 text-sm font-medium text-olive">
+                  Retirada no local (sem entrega)
                 </p>
               )}
 
