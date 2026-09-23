@@ -22,7 +22,17 @@ export default function AdminProdutos() {
 
   const handleDelete = async (id) => {
     if (!confirm("Remover este produto? Essa ação não pode ser desfeita.")) return;
-    await supabase.from("produtos").delete().eq("id", id);
+    const { error } = await supabase.from("produtos").delete().eq("id", id);
+    if (error) {
+      if (error.code === "23503") {
+        alert(
+          "Esse produto já foi comprado por algum cliente, então não pode ser excluído (isso apagaria o histórico dos pedidos). Use o botão de status para deixá-lo como Inativo — ele some da loja, mas o histórico continua intacto."
+        );
+      } else {
+        alert("Não foi possível remover o produto: " + error.message);
+      }
+      return;
+    }
     loadProdutos();
   };
 
